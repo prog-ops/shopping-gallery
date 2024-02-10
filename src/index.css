@@ -1,0 +1,211 @@
+/*1*/
+/*.gallery {
+  position: relative;
+  width: 100%;
+  !*text-align: center;*!
+  overflow: hidden; !* Ensure the previous and next images are not visible outside the gallery *!
+
+}
+
+.prev-image,
+.next-image {
+  position: absolute;
+  top: 0;
+  opacity: 0.5; !* Set the opacity for previous and next images *!
+  transition: opacity 0.3s ease-in-out; !* Add transition effect for smooth appearance *!
+}
+
+.prev-image {
+  left: 0;
+  width: auto;
+  height: 100%;
+}
+
+.next-image {
+  right: 0;
+  width: auto;
+  height: 100%;
+}
+
+.image-container {
+  display: flex;
+  transition: transform 0.3s ease; !* Add transition effect for smooth sliding *!
+}*/
+
+/*2*/
+/*.prev-image,
+.next-image,
+.current-image {
+  flex: 0 0 auto; !* Prevent images from growing or shrinking *!
+  width: 100%;
+  object-fit: cover; !* Ensure images maintain aspect ratio while filling the container *!
+}
+.prev-image {
+  margin-right: -50%; !* Move the previous image to the left *!
+}
+.next-image {
+  margin-left: -50%; !* Move the next image to the right *!
+}
+.current-image {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  transition: opacity 0.3s ease-in-out; !* Add transition effect for smooth appearance *!
+}
+button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+button:focus {
+  outline: none;
+}
+*/
+
+/*build a simple carousel component*/
+
+/*.div1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 250px;
+  width: 100%;
+  background-color: #00008B;
+  color: white;
+  margin: 0 15px;
+  font-size: 4em;
+}*/
+
+/*Make an image carousel slider with react*/
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+}
+
+.carousel {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 600px;
+  height: 400px;
+}
+
+.slide {
+  border-radius: 0.5rem;
+  box-shadow: 0 0 7px #444;
+  width: 100%;
+  height: 100%;
+  margin: 0 20px 0 20px;
+}
+
+.slide-hidden {
+  display: none;
+}
+
+.arrow {
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  color: white;
+  filter: drop-shadow(0 0 5px #555) ;
+}
+
+.arrow:hover {
+  cursor: pointer;
+}
+
+.arrow-left {
+  left: 1rem;
+}
+
+.arrow-right {
+  right: 1rem;
+}
+
+.indicators {
+  display: flex;
+  position: absolute;
+  bottom: 1rem;
+}
+
+.indicator {
+  background-color: yellow;/*white*/
+  height: .5rem;
+  width: .5rem;
+  border-radius: 100%;
+  border: none;
+  outline: none;
+  box-shadow: 0 0 5px #555;
+  margin: 0 .2rem;
+  cursor: pointer;
+}
+
+.indicator-inactive {
+  background-color: grey;
+}
+
+.App2Item {
+  width: 80%;
+  height: 50%;
+}
+
+/*api 3*/
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -15px; /* Adjust as needed */
+}
+
+/* Add margin between rows */
+.row + .row {
+  margin-top: 100px; /* Adjust the margin-top as needed */
+}
+
+.column {
+  flex: 20%; /* Each column takes up 20% of the row */
+  padding: 0 15px; /* Adjust as needed */
+}
+
+/* For responsiveness, you may want to adjust column width at different screen sizes */
+@media screen and (max-width: 768px) {
+  .column {
+    flex: 50%; /* Each column takes up 50% of the row on smaller screens */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .column {
+    flex: 100%; /* Each column takes up 100% of the row on even smaller screens */
+  }
+}
+
+.gridContainer {
+  width: 100%; /* Ensure the container takes up the full width */
+  padding: 15px 0; /* Adjust as needed */
+}
+
+/*ng*/
+.mediaUri {
+  width: 70%;
+  height: 70%;
+}
+.justified {
+  text-align: justify;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.justified p {
+  display: inline-block;
+  text-align: left;
+}
