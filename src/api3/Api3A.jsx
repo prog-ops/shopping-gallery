@@ -14,7 +14,7 @@ const GridList = ({ items: data }) => {
             columns.push(
                 <div className="column" key={currentItem.id}>
                     <h4>{currentItem.title}</h4>
-                    <p>{currentItem.subtitle}</p>
+                    <p>{currentItem.description}</p>
                 </div>
             );
 
@@ -41,8 +41,8 @@ const GridList = ({ items: data }) => {
                     const couponDiscountRate = subItem.items[0]?.publication.priceInfo?.couponDiscountRate
                     const couponDiscountPrice = subItem.items[0]?.publication.priceInfo?.couponDiscountPrice
 
-                    console.log('cdr', couponDiscountRate)
-                    console.log('cdp', couponDiscountPrice)
+                    // console.log('cdr', couponDiscountRate)
+                    // console.log('cdp', couponDiscountPrice)
 
                     columns.push(
                         <div className="column" key={subItem.id}>
