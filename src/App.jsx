@@ -13,7 +13,9 @@ function App() {
   return (
     <>
         {/*<AApp />*/}
+        {/*tampil semua*/}
         {/*<BApp />*/}
+        {/*tampil 3*/}
         {/*<CApp />*/}
         {/*<DApp />*/}
         {/*<ImageCarousel />*/}
