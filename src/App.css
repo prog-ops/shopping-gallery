@@ -1,84 +1,181 @@
+/* 1. Global Variables & Reset */
+:root {
+  --primary: #00d094; /* Warna hijau brand modern (bisa diganti) */
+  --text-main: #333333;
+  --text-muted: #999999;
+  --bg-error: #fff5f5;
+  --text-error: #e02020;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --transition-fast: 0.3s ease;
+  --carousel-ratio-pc: 3 / 1;    /* Rasio lebar:tinggi PC */
+  --carousel-ratio-mo: 1 / 1;    /* Rasio untuk Mobile */
+}
+
+* {
+  box-sizing: border-box;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  padding: 0 1rem; /* Padding samping agar tidak mepet di mobile */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text-main);
   background-color: white;
 }
 
-.App {
-  height: 25vh;
+/* 2. Layout Containers (Pengganti .App & .App2) */
+/* Gunakan class ini untuk membungkus setiap section (Banner, Shortcut, dll) */
+.section-container {
+  width: 100%;
   display: flex;
-  align-items: center;
-  /*justify-content: center;*/
   flex-direction: column;
+  margin-bottom: 3rem; /* Jarak antar section */
+  position: relative;
 }
 
-.App2 {
-  height: 25vh;
-  margin-top: 2rem;
+/* 3. Modern Carousel Styles (Wajib untuk komponen sebelumnya) */
+.carousel-container {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  /* Aspect Ratio mencegah Layout Shift saat loading */
+  aspect-ratio: var(--carousel-ratio-pc);
+  background-color: #f0f0f0; /* Skeleton background color */
+}
+
+.carousel-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Slide Transition Logic (Fade Effect) */
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 0;
+}
+
+.slide.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.slide-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Gambar cover area tanpa distorsi */
+  display: block;
+}
+
+/* Navigation Arrows */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2.5rem;
+  height: 2.5rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.2); /* Backdrop transparan */
+  border-radius: 50%;
+  padding: 0.5rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: var(--transition-fast);
+  backdrop-filter: blur(2px); /* Efek kaca modern */
+}
+
+.arrow:hover {
+  background: rgba(0, 0, 0, 0.5);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.arrow-left { left: 1rem; }
+.arrow-right { right: 1rem; }
+
+/* Modern Indicators (Capsule Style) */
+.indicators {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  align-items: center;
-  /*justify-content: center;*/
-  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 10;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
 }
 
-/* Loading, Error, and No Data States */
-.loading {
-  padding: 2rem;
-  font-size: 1.2rem;
-  color: #666;
-  text-align: center;
-  animation: pulse 1.5s ease-in-out infinite;
+.indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
+.indicator.active {
+  background-color: white;
+  width: 24px; /* Memanjang saat aktif */
+  border-radius: 4px;
+}
+
+/* 4. Loading & Error States */
+.loading-skeleton {
+  width: 100%;
+  aspect-ratio: var(--carousel-ratio-pc);
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  border-radius: var(--radius-md);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.status-badge {
+  display: inline-block;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-error);
+  color: var(--text-error);
+  border: 1px solid rgba(224, 32, 32, 0.2);
+}
+
+/* 5. Mobile Responsiveness */
+@media (max-width: 768px) {
+  #root {
+    padding: 0; /* Full width di mobile */
   }
-  50% {
-    opacity: 0.5;
+
+  .carousel-container {
+    border-radius: 0; /* Kotak penuh di mobile */
+    /* Opsional: Ubah rasio jika ingin lebih tinggi di HP */
+    /* aspect-ratio: var(--carousel-ratio-mo); */
   }
-}
 
-.error {
-  padding: 2rem;
-  font-size: 1rem;
-  color: #d32f2f;
-  background-color: #ffebee;
-  border: 1px solid #ef5350;
-  border-radius: 4px;
-  text-align: center;
-  margin: 1rem;
-}
+  .arrow {
+    display: none; /* Sembunyikan panah di mobile (Gunakan Swipe) */
+  }
 
-.warning {
-  padding: 1rem;
-  font-size: 0.9rem;
-  color: #f57c00;
-  background-color: #fff3e0;
-  border: 1px solid #ffb74d;
-  border-radius: 4px;
-  text-align: center;
-  margin: 0.5rem;
-}
-
-.no-data {
-  padding: 2rem;
-  font-size: 1rem;
-  color: #757575;
-  text-align: center;
-}
-
-.no-image {
-  width: 70%;
-  height: 70%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f5f5f5;
-  color: #999;
-  border: 1px dashed #ccc;
-  border-radius: 4px;
+  .indicators {
+    bottom: 1rem;
+    background: transparent; /* Hilangkan background hitam di mobile */
+  }
 }
