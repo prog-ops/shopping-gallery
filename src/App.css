@@ -39,11 +39,13 @@
 .carousel-container {
   position: relative;
   width: 100%;
-  border-radius: var(--radius-md);
+  max-width: 1200px;
+  margin: 0 auto;
+  /* Aspect ratio sedikit lebih tinggi agar efek kartu terlihat bagus */
+  aspect-ratio: 2.8 / 1;
+  perspective: 1000px; /* Memberikan kedalaman 3D */
   overflow: hidden;
-  /* Aspect Ratio mencegah Layout Shift saat loading */
-  aspect-ratio: var(--carousel-ratio-pc);
-  background-color: #f0f0f0; /* Skeleton background color */
+  padding: 1rem 0; /* Ruang untuk shadow kartu */
 }
 
 .carousel-wrapper {
@@ -52,28 +54,82 @@
   position: relative;
 }
 
+/* Track untuk menampung slide */
+.carousel-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Slide Transition Logic (Fade Effect) */
 .slide {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+  width: 70%; /* Slide utama tidak full width, agar slide samping terlihat */
   height: 100%;
-  opacity: 0;
-  transition: opacity 0.5s ease-in-out;
-  z-index: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transisi smooth "membal" */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  background: white;
+  will-change: transform, opacity; /* Optimasi GPU */
 }
 
+/* --- STATES: Active, Prev, Next --- */
+
+/* 1. Active (Tengah, Paling Depan) */
 .slide.active {
+  transform: translateX(0) scale(1);
+  z-index: 10;
   opacity: 1;
-  z-index: 1;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2); /* Shadow lebih besar */
+}
+
+/* 2. Previous (Geser Kiri, Belakang, Agak Gelap) */
+.slide.prev {
+  transform: translateX(-65%) scale(0.85); /* Geser kiri 65%, kecilkan 85% */
+  z-index: 5;
+  opacity: 1; /* Tetap visible */
+  cursor: pointer;
+}
+.slide.prev .overlay { opacity: 0.3; } /* Gelapkan sedikit */
+
+/* 3. Next (Geser Kanan, Belakang, Agak Gelap) */
+.slide.next {
+  transform: translateX(65%) scale(0.85); /* Geser kanan 65%, kecilkan 85% */
+  z-index: 5;
+  opacity: 1;
+  cursor: pointer;
+}
+.slide.next .overlay { opacity: 0.3; }
+
+/* 4. Hidden (Slide lainnya) */
+.slide.hidden {
+  transform: scale(0.5);
+  opacity: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .slide-image {
   width: 100%;
   height: 100%;
   object-fit: cover; /* Gambar cover area tanpa distorsi */
-  display: block;
+}
+
+/* Overlay Gelap (untuk slide samping) */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
 }
 
 /* Navigation Arrows */
@@ -81,25 +137,19 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 2.5rem;
-  height: 2.5rem;
+  z-index: 20; /* Harus di atas semua slide */
+  font-size: 2.5rem;
   color: white;
-  background: rgba(0, 0, 0, 0.2); /* Backdrop transparan */
+  background: rgba(0,0,0,0.3);
   border-radius: 50%;
-  padding: 0.5rem;
+  padding: 8px;
   cursor: pointer;
-  z-index: 10;
-  transition: var(--transition-fast);
-  backdrop-filter: blur(2px); /* Efek kaca modern */
+  backdrop-filter: blur(4px);
+  transition: 0.3s;
 }
-
-.arrow:hover {
-  background: rgba(0, 0, 0, 0.5);
-  transform: translateY(-50%) scale(1.1);
-}
-
-.arrow-left { left: 1rem; }
-.arrow-right { right: 1rem; }
+.arrow:hover { background: rgba(0,0,0,0.6); transform: translateY(-50%) scale(1.1); }
+.arrow-left { left: 20px; }
+.arrow-right { right: 20px; }
 
 /* Modern Indicators (Capsule Style) */
 .indicators {
@@ -108,11 +158,8 @@
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 0.5rem;
-  z-index: 10;
-  padding: 0.5rem 1rem;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 20px;
+  gap: 8px;
+  z-index: 20;
 }
 
 .indicator {
@@ -160,14 +207,14 @@
 
 /* 5. Mobile Responsiveness */
 @media (max-width: 768px) {
-  #root {
-    padding: 0; /* Full width di mobile */
+  .slide {
+    width: 85%; /* Di HP, slide utama lebih lebar */
   }
+  .slide.prev { transform: translateX(-95%) scale(0.85); } /* Geser lebih jauh di HP */
+  .slide.next { transform: translateX(95%) scale(0.85); }
 
   .carousel-container {
-    border-radius: 0; /* Kotak penuh di mobile */
-    /* Opsional: Ubah rasio jika ingin lebih tinggi di HP */
-    /* aspect-ratio: var(--carousel-ratio-mo); */
+    aspect-ratio: 1.2 / 1; /* Lebih kotak untuk HP */
   }
 
   .arrow {
