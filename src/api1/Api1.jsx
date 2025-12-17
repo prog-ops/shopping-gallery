@@ -1,59 +1,104 @@
-import {useEffect, useState} from "react";
-import {BsArrowLeftCircle, BsArrowRightCircle} from "react-icons/bs";
-import mockData from '../api1.json';
+import { useEffect, useState, useRef, useCallback } from "react";
+import { BsArrowLeftCircle, BsArrowRightCircle } from "react-icons/bs";
+import mockData from '../api1.json'; // Pastikan path ini benar sesuai struktur foldermu
 
-const Carousel = ({data}) => {
+const Carousel = ({ data }) => {
     const [slide, setSlide] = useState(0);
+    const [touchStart, setTouchStart] = useState(null);
+    const [touchEnd, setTouchEnd] = useState(null);
+    const timeoutRef = useRef(null);
 
-    // ✅ FIXED: prev now decrements, next increments
-    const prev = () => {
-        setSlide(slide === 0 ? data.length - 1 : slide - 1);
-    };
-    const next = () => {
-        setSlide(slide === data.length - 1 ? 0 : slide + 1);
+    // Minimum jarak swipe agar dianggap ganti slide
+    const minSwipeDistance = 50;
+
+    const length = data.length;
+
+    // --- Logic Navigasi ---
+    const nextSlide = useCallback(() => {
+        setSlide((prev) => (prev === length - 1 ? 0 : prev + 1));
+    }, [length]);
+
+    const prevSlide = useCallback(() => {
+        setSlide((prev) => (prev === 0 ? length - 1 : prev - 1));
+    }, [length]);
+
+    // --- Auto Play ---
+    useEffect(() => {
+        // Reset timer setiap kali slide berubah
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+        // Ganti slide setiap 4 detik
+        timeoutRef.current = setTimeout(nextSlide, 4000);
+
+        return () => clearTimeout(timeoutRef.current);
+    }, [slide, nextSlide]);
+
+    // --- Logic Swipe (Touch) ---
+    const onTouchStart = (e) => {
+        setTouchEnd(null);
+        setTouchStart(e.targetTouches[0].clientX);
     };
 
-    // Prevent rendering if no data
-    if (!data || data.length === 0) {
-        return null;
-    }
+    const onTouchMove = (e) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const onTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+
+        if (isLeftSwipe) nextSlide();
+        if (isRightSwipe) prevSlide();
+    };
+
+    if (!data || length === 0) return null;
 
     return (
-        <div className="carousel">
-            <BsArrowLeftCircle
-                className="arrow arrow-left"
-                onClick={prev}
-                aria-label="Previous slide"
-            />
-            {data.map((item, index) => {
-                return (
-                    <img
-                        className={slide === index ? "slide" : "slide slide-hidden"}
-                        key={item.id || `banner-${index}`}
-                        src={item.pcImageUrl}
-                        alt={item.title || "Banner image"}
+        <div
+            className="carousel-container"
+            onMouseEnter={() => clearTimeout(timeoutRef.current)} // Pause saat mouse di atas banner
+            onMouseLeave={() => timeoutRef.current = setTimeout(nextSlide, 4000)} // Resume saat mouse pergi
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+        >
+            <BsArrowLeftCircle className="arrow arrow-left" onClick={prevSlide} aria-label="Previous" />
+
+            <div className="carousel-wrapper">
+                {data.map((item, index) => (
+                    <div
+                        key={item.id || index}
+                        className={index === slide ? "slide active" : "slide"}
+                    >
+                        {/* Optimasi Gambar: Hanya load gambar jika slide aktif atau dekat */}
+                        {Math.abs(slide - index) <= 1 && (
+                            <img
+                                src={item.pcImageUrl}
+                                alt={item.title || "Banner"}
+                                // Gambar pertama prioritas tinggi (LCP), sisanya lazy load
+                                loading={index === 0 ? "eager" : "lazy"}
+                                className="slide-image"
+                            />
+                        )}
+                    </div>
+                ))}
+            </div>
+
+            <BsArrowRightCircle className="arrow arrow-right" onClick={nextSlide} aria-label="Next" />
+
+            <div className="indicators">
+                {data.map((_, idx) => (
+                    <button
+                        key={idx}
+                        onClick={() => setSlide(idx)}
+                        className={slide === idx ? "indicator active" : "indicator"}
+                        aria-label={`Go to slide ${idx + 1}`}
                     />
-                );
-            })}
-            <BsArrowRightCircle
-                className="arrow arrow-right"
-                onClick={next}
-                aria-label="Next slide"
-            />
-            <span className="indicators">
-        {data.map((item, idx) => {
-            return (
-                <button
-                    key={item.id || `indicator-${idx}`}
-                    onClick={() => setSlide(idx)}
-                    aria-label={`Go to slide ${idx + 1}`}
-                    className={
-                        slide === idx ? "indicator" : "indicator indicator-inactive"
-                    }
-                ></button>
-            );
-        })}
-      </span>
+                ))}
+            </div>
         </div>
     );
 };
@@ -64,52 +109,33 @@ const Api1App = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        setLoading(true);
-
-        // Try to fetch from API first
-        fetch("https://api.testvalley.kr/main-banner/all")
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
+        const fetchImages = async () => {
+            try {
+                const res = await fetch("https://api.testvalley.kr/main-banner/all");
+                if (!res.ok) throw new Error("Network response was not ok");
+                const data = await res.json();
                 setImages(data);
-                setError(null);
-            })
-            .catch((error) => {
-                console.warn("API unavailable, using mock data:", error.message);
-                // Fallback to mock data if API fails (301, CORS, network error, etc.)
+            } catch (err) {
+                console.warn("API Error, switching to mock data:", err);
                 setImages(mockData);
-                setError("⚠️ Using offline data (API unavailable)");
-            })
-            .finally(() => {
+                setError("Offline Mode");
+            } finally {
                 setLoading(false);
-            });
+            }
+        };
+
+        fetchImages();
     }, []);
 
-    if (loading) {
-        return (
-            <div className="App">
-                <div className="loading">Loading banners...</div>
-            </div>
-        );
-    }
-
-    if (images.length === 0) {
-        return (
-            <div className="App">
-                <div className="no-data">No banners available</div>
-            </div>
-        );
-    }
+    if (loading) return <div className="loading-skeleton">Loading...</div>;
+    if (!images.length) return null;
 
     return (
-        <div className="App">
-            {error && <div className="warning">{error}</div>}
-            <Carousel data={images}/>
+        <div className="api1-section">
+            {error && <small className="status-badge">{error}</small>}
+            <Carousel data={images} />
         </div>
     );
 };
+
 export default Api1App;
