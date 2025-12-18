@@ -160,6 +160,7 @@
   display: flex;
   gap: 8px;
   z-index: 20;
+  padding: 20px 12px;
 }
 
 .indicator {
