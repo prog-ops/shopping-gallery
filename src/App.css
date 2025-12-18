@@ -367,6 +367,63 @@
   color: #ccc;
 }
 
+/* --- Reusable Loading Component --- */
+.loading-wrapper {
+  width: 100%;
+  padding: 3rem 1rem; /* Memberi ruang vertikal agar tidak gepeng */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-track {
+  width: 100%;
+  max-width: 300px; /* Batasi lebar agar terlihat rapi */
+  height: 4px;      /* Ketebalan garis */
+  background-color: #f0f0f0; /* Warna track abu-abu muda */
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-animated {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #00d094, #00a072); /* Gradasi Hijau Brand */
+  border-radius: 4px;
+  /* Animasi Kunci */
+  transform-origin: 0% 50%;
+  animation: indeterminate 1.5s infinite ease-in-out;
+}
+
+.loading-text {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: #999;
+  font-weight: 500;
+  animation: pulseText 1.5s infinite ease-in-out;
+}
+
+/* Efek garis bergerak dari kiri ke kanan lalu mengecil */
+@keyframes indeterminate {
+  0% {
+    transform: translateX(0) scaleX(0);
+  }
+  40% {
+    transform: translateX(0) scaleX(0.4);
+  }
+  100% {
+    transform: translateX(100%) scaleX(0.5);
+  }
+}
+
+/* Efek teks kedip halus */
+@keyframes pulseText {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
 /* --- Responsive (Mobile) --- */
 @media (max-width: 768px) {
   .shortcut-container {
