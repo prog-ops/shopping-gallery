@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import mockData from '../api2.json';
+import {useQuery} from "@tanstack/react-query";
+import { useStore } from "../store/store";
+import Loading from "../components/Loading.jsx";
 
 const ShortcutGrid = ({ data }) => {
     if (!data || data.length === 0) return null;
@@ -28,29 +31,29 @@ const ShortcutGrid = ({ data }) => {
 };
 
 const Api2AApp = () => {
-    const [shortcuts, setShortcuts] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // Panggil action Zustand
+    const { setCategory } = useStore();
 
-    useEffect(() => {
-        fetch('https://api.testvalley.kr/main-shortcut/all')
-            .then(res => res.json())
-            .then(data => setShortcuts(data))
-            .catch(err => {
-                console.warn('API Error, using mock:', err);
-                setShortcuts(mockData);
-            })
-            .finally(() => setLoading(false));
-    }, []);
+    const { data: shortcuts, isLoading } = useQuery({
+        queryKey: ['shortcuts'],
+        queryFn: async () => {
+            const res = await fetch('https://api.testvalley.kr/main-shortcut/all');
+            return res.json();
+        }
+    });
 
-    if (loading) return <div className="loading-skeleton-sm"></div>;
-    if (!shortcuts.length) return null;
+    if (isLoading) return <Loading />;
+
+    const finalShortcuts = shortcuts || mockData;
 
     return (
-        // Gunakan section-container yang kita buat sebelumnya agar rapi
         <div className="section-container" style={{ marginTop: '1.5rem' }}>
-            <ShortcutGrid data={shortcuts} />
+            {/* Saat diklik, update state global via Zustand */}
+            <ShortcutGrid
+                data={finalShortcuts}
+                onFilterClick={(title) => setCategory(title)}
+            />
         </div>
     );
 };
-
 export default Api2AApp;
