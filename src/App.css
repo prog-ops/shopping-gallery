@@ -424,6 +424,41 @@
   50% { opacity: 1; }
 }
 
+/* --- Image Fallback Placeholder --- */
+/* Class ini akan menggantikan <img>, jadi harus punya sifat layout yang mirip */
+.fallback-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0; /* Abu-abu muda */
+  color: #c0c0c0; /* Ikon abu-abu agak gelap */
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Menjaga konsistensi layout */
+}
+
+/* Animasi ikon biar sedikit hidup (opsional) */
+.fallback-icon {
+  width: 40%;   /* Ukuran ikon relatif terhadap kotak */
+  height: 40%;
+  opacity: 0.5;
+}
+
+/* Khusus Carousel (Api1) agar placeholder mengikuti border-radius slide */
+.slide .fallback-placeholder {
+  border-radius: 16px;
+}
+
+/* Khusus Shortcut (Api2) agar placeholder bulat/rounded */
+.shortcut-icon-wrapper .fallback-placeholder {
+  border-radius: 18px;
+}
+
+/* Khusus Product Card (Api3) */
+.card-image-wrapper .fallback-placeholder {
+  border-radius: 8px;
+}
+
 /* --- Responsive (Mobile) --- */
 @media (max-width: 768px) {
   .shortcut-container {

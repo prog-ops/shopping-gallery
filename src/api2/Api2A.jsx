@@ -3,6 +3,7 @@ import mockData from '../api2.json';
 import {useQuery} from "@tanstack/react-query";
 import { useStore } from "../store/store";
 import Loading from "../components/Loading.jsx";
+import ImageWithFallback from "../components/ImageWithFallback.jsx";
 
 const ShortcutGrid = ({ data }) => {
     if (!data || data.length === 0) return null;
@@ -16,11 +17,10 @@ const ShortcutGrid = ({ data }) => {
                     className="shortcut-item"
                 >
                     <div className="shortcut-icon-wrapper">
-                        <img
+                        <ImageWithFallback
                             src={item.imageUrl}
                             alt={item.title}
                             className="shortcut-image"
-                            loading="lazy"
                         />
                     </div>
                     <span className="shortcut-title">{item.title}</span>

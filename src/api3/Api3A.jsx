@@ -3,6 +3,7 @@ import mockData from '../api3.json';
 import {useQuery} from "@tanstack/react-query";
 import { useStore } from "../store/store";
 import Loading from "../components/Loading.jsx";
+import ImageWithFallback from "../components/ImageWithFallback.jsx";
 
 // Komponen Kartu Produk
 const ProductCard = ({ item }) => {
@@ -24,11 +25,14 @@ const ProductCard = ({ item }) => {
     return (
         <div className="product-card">
             <div className="card-image-wrapper">
-                {mediaUri ? (
-                    <img src={mediaUri} alt={title} loading="lazy" />
-                ) : (
-                    <div className="no-image-placeholder">No Image</div>
-                )}
+                {/* 2. Hapus logic ternary if (mediaUri ? img : div) yang lama.
+               Langsung saja pasang ImageWithFallback.
+               Dia otomatis handle jika mediaUri null/undefined.
+        */}
+                <ImageWithFallback
+                    src={mediaUri}
+                    alt={title}
+                />
 
                 {/* Badge Diskon di Gambar (Opsional, lebih modern) */}
                 {discountRate && (

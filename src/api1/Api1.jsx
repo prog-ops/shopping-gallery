@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { BsArrowLeftCircle, BsArrowRightCircle } from "react-icons/bs";
 import mockData from '../api1.json';
+import ImageWithFallback from "../components/ImageWithFallback.jsx";
 
 const Carousel = ({ data }) => {
     const [slide, setSlide] = useState(0);
@@ -82,6 +83,15 @@ const Carousel = ({ data }) => {
                             )}
                             {/* Overlay gelap untuk slide belakang agar slide utama lebih pop-out */}
                             <div className="overlay"></div>
+                            {Math.abs(slide - index) <= 1 && (
+                                // 2. Ganti <img> dengan ImageWithFallback
+                                <ImageWithFallback
+                                    src={item.pcImageUrl}
+                                    alt={item.title}
+                                    // loading="lazy" (opsional, krn ImageWithFallback merender div saat error)
+                                    className="slide-image"
+                                />
+                            )}
                         </div>
                     );
                 })}
