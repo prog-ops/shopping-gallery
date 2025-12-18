@@ -227,10 +227,23 @@
   color: var(--text-main);
   transition: transform 0.2s;
   cursor: pointer;
+  user-select: none; /* Mencegah teks terblok saat klik cepat */
 }
 
 .shortcut-item:hover {
   transform: translateY(-5px); /* Efek naik sedikit saat di-hover */
+}
+
+/* Style saat kategori AKTIF dipilih */
+.shortcut-item.active .shortcut-icon-wrapper {
+  border: 2px solid #00d094; /* Border hijau */
+  background-color: #e6fbf5; /* Background hijau muda */
+  transform: translateY(-5px); /* Naik sedikit */
+}
+
+.shortcut-item.active .shortcut-title {
+  color: #00d094;
+  font-weight: 700;
 }
 
 /* --- Gambar Icon --- */

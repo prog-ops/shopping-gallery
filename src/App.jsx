@@ -20,11 +20,9 @@ function App() {
         {/*<DApp />*/}
         {/*<ImageCarousel />*/}
         {/*<F />*/}
-        <div>
             <Api1App />
             <Api2AApp />
             <Api3AApp/>
-        </div>
     </>
   )
 }
