@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import mockData from '../api3.json';
+import {useQuery} from "@tanstack/react-query";
+import { useStore } from "../store/store";
+import Loading from "../components/Loading.jsx";
 
 // Komponen Kartu Produk
 const ProductCard = ({ item }) => {
@@ -52,29 +55,44 @@ const ProductCard = ({ item }) => {
 };
 
 export const Api3AApp = () => {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // 1. Ambil state filter dari Zustand
+    const { selectedCategory } = useStore();
 
-    useEffect(() => {
-        fetch('https://api.testvalley.kr/collections?prearrangedDiscount&type=SINGLE&viewType=TILE')
-            .then(res => res.json())
-            .then(result => setData(result.items || []))
-            .catch(err => {
-                console.warn('Using offline data:', err);
-                setData(mockData.items || []);
-            })
-            .finally(() => setLoading(false));
-    }, []);
+    // 2. Ambil data dengan React Query (Otomatis Caching!)
+    const { data: allData, isLoading, isError } = useQuery({
+        queryKey: ['products'], // Key unik untuk cache
+        queryFn: async () => {
+            const res = await fetch('https://api.testvalley.kr/collections?prearrangedDiscount&type=SINGLE&viewType=TILE');
+            if (!res.ok) throw new Error('Network error');
+            const json = await res.json();
+            return json.items;
+        },
+        // Jika error, fallback ke mockData bisa dihandle di sini atau di UI
+    });
 
-    if (loading) return <div className="loading-skeleton-grid">Loading...</div>;
-    if (!data.length) return null;
+    // Handle Loading & Error
+    if (isLoading) return <Loading />;
+
+    // Gunakan data dari cache atau fallback ke mockData jika fetch gagal
+    const finalData = isError || !allData ? mockData.items : allData;
+
+    // 3. Logic Filter (Client Side)
+    const displayData = selectedCategory === "ALL"
+        ? finalData
+        : finalData.filter(item => {
+            const title = item.title || item.items?.[0]?.publication?.title || "";
+            return title.toLowerCase().includes(selectedCategory.toLowerCase());
+        });
 
     return (
         <div className="section-container">
-            {/* Grid Wrapper */}
+            {selectedCategory !== "ALL" && (
+                <h3>Kategori: {selectedCategory}</h3>
+            )}
+
             <div className="product-grid">
-                {data.map((item, index) => (
-                    <ProductCard key={item.id || index} item={item} />
+                {displayData.map((item, index) => (
+                    <ProductCard key={index} item={item} />
                 ))}
             </div>
         </div>
