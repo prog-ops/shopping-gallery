@@ -206,6 +206,96 @@
   border: 1px solid rgba(224, 32, 32, 0.2);
 }
 
+/* Api2A */
+/* --- Shortcut / Quick Menu Container --- */
+.shortcut-container {
+  display: grid;
+  /* Desktop: 10 kolom otomatis (sesuai jumlah data shortcut biasanya 10) */
+  grid-template-columns: repeat(10, 1fr);
+  gap: 1rem;
+  padding: 1rem 0;
+  width: 100%;
+}
+
+/* --- Item Shortcut --- */
+.shortcut-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-decoration: none; /* Hilangkan garis bawah link */
+  color: var(--text-main);
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.shortcut-item:hover {
+  transform: translateY(-5px); /* Efek naik sedikit saat di-hover */
+}
+
+/* --- Gambar Icon --- */
+.shortcut-icon-wrapper {
+  width: 64px; /* Ukuran standar icon e-commerce */
+  height: 64px;
+  margin-bottom: 8px;
+  border-radius: 18px; /* Sudut tumpul modern */
+  background: #f9f9f9; /* Background tipis jika gambar transparan */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.shortcut-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Pastikan icon tidak terpotong */
+}
+
+/* --- Judul Shortcut --- */
+.shortcut-title {
+  font-size: 0.85rem; /* Font kecil tapi terbaca */
+  text-align: center;
+  line-height: 1.2;
+  color: #333;
+  font-weight: 500;
+  /* Membatasi teks jadi 2 baris max jika kepanjangan */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* --- Responsive (Mobile) --- */
+@media (max-width: 768px) {
+  .shortcut-container {
+    /* Di Mobile jadi 5 kolom (2 baris jika ada 10 item) */
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.8rem 0.5rem; /* Gap vertikal, horizontal */
+  }
+
+  .shortcut-icon-wrapper {
+    width: 48px; /* Icon lebih kecil di HP */
+    height: 48px;
+    border-radius: 14px;
+  }
+
+  .shortcut-title {
+    font-size: 0.75rem; /* Font lebih kecil */
+  }
+}
+
+/* Skeleton Loading untuk Shortcut */
+.loading-skeleton-sm {
+  width: 100%;
+  height: 100px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  animation: shimmer 1.5s infinite;
+  margin-top: 1.5rem;
+}
+/* Api2A end */
+
 /* 5. Mobile Responsiveness */
 @media (max-width: 768px) {
   .slide {
