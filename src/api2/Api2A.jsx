@@ -28,7 +28,8 @@ const ShortcutGrid = ({ data, onFilterClick, activeCategory }) => {
                                 src={item.imageUrl}
                                 alt={item.title}
                                 className="shortcut-image"
-                            />
+                            />{/* Opsional: Tambahkan tanda silang kecil saat aktif agar user tahu bisa di-unselect */}
+                            {isActive && <div className="active-indicator">✕</div>}
                         </div>
                         <span className="shortcut-title">{item.title}</span>
                     </div>
@@ -40,7 +41,7 @@ const ShortcutGrid = ({ data, onFilterClick, activeCategory }) => {
 
 const Api2AApp = () => {
     // Ambil juga selectedCategory untuk visual feedback (highlight)
-    const { setCategory, selectedCategory } = useStore();
+    const { setCategory, resetCategory, selectedCategory } = useStore();
 
     const { data: shortcuts, isLoading } = useQuery({
         queryKey: ['shortcuts'],
@@ -49,6 +50,17 @@ const Api2AApp = () => {
             return res.json();
         }
     });
+
+    // --- LOGIC TOGGLE (UNSELECT) ---
+    const handleCategoryClick = (clickedTitle) => {
+        if (selectedCategory === clickedTitle) {
+            // Jika yang diklik adalah yang sedang aktif -> Matikan (Reset)
+            resetCategory();
+        } else {
+            // Jika beda -> Aktifkan baru
+            setCategory(clickedTitle);
+        }
+    };
 
     if (isLoading) return <Loading />;
 
@@ -60,7 +72,7 @@ const Api2AApp = () => {
             <ShortcutGrid
                 data={finalShortcuts}
                 activeCategory={selectedCategory} // Kirim status aktif
-                onFilterClick={(title) => setCategory(title)}
+                onFilterClick={handleCategoryClick}
             />
         </div>
     );
