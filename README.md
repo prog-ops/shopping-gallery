@@ -1,5 +1,7 @@
 # 🛍️ Shopping Gallery UI (Modern E-Commerce)
 
+https://shopping-gallery-t2yo.vercel.app/
+
 A high-performance, responsive e-commerce homepage interface built with **React**, **Zustand**, and **TanStack Query**.
 
 This project demonstrates modern frontend architecture, focusing on **Core Web Vitals (CWV)**, seamless UX, and efficient state management without heavy dependencies.
