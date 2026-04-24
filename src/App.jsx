@@ -8,21 +8,15 @@ import './App.css'
 import CarouselApp from "./api1/CarouselApp.jsx";
 import CategoryApp from "./api2/CategoryApp.jsx";
 import {CardApp} from "./api3/CardApp.jsx";
+import Cart from "./components/Cart.jsx";
 
 function App() {
   return (
     <>
-        {/*<AApp />*/}
-        {/*tampil semua*/}
-        {/*<BApp />*/}
-        {/*tampil 3*/}
-        {/*<CApp />*/}
-        {/*<DApp />*/}
-        {/*<ImageCarousel />*/}
-        {/*<F />*/}
             <CarouselApp />
             <CategoryApp />
             <CardApp/>
+            <Cart />
     </>
   )
 }

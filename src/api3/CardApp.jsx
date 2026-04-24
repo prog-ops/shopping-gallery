@@ -7,6 +7,7 @@ import ImageWithFallback from "../components/ImageWithFallback.jsx";
 
 // Komponen Kartu Produk
 const ProductCard = ({ item }) => {
+    const { addToCart } = useStore();
     const mediaUri = item.image;
     const title = item.name;
     const price = item.priceCents;
@@ -35,6 +36,16 @@ const ProductCard = ({ item }) => {
                         ${(price / 100).toFixed(2)}
                     </div>
                 ) : null}
+                
+                <button 
+                    className="add-to-cart-btn"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(item);
+                    }}
+                >
+                    Add to Cart
+                </button>
             </div>
         </div>
     );

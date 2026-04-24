@@ -398,6 +398,25 @@
   border-top-right-radius: 8px;
 }
 
+.add-to-cart-btn {
+  margin-top: 10px;
+  width: 100%;
+  background-color: transparent;
+  color: #00d094;
+  border: 1px solid #00d094;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #00d094;
+  color: white;
+}
+
 /* --- Loading State --- */
 .loading-skeleton-grid {
   display: grid;
