@@ -5,9 +5,9 @@ import './App.css'
 // import DApp from "./api1/d.jsx";
 // import ImageCarousel from "./api1/e.jsx";
 // import {F} from "./api1/BuildASimpleCarouselLib.jsx";
-import Api1App from "./api1/Api1.jsx";
-import Api2AApp from "./api2/Api2A.jsx";
-import {Api3AApp} from "./api3/Api3A.jsx";
+import CarouselApp from "./api1/CarouselApp.jsx";
+import CategoryApp from "./api2/CategoryApp.jsx";
+import {CardApp} from "./api3/CardApp.jsx";
 
 function App() {
   return (
@@ -20,9 +20,9 @@ function App() {
         {/*<DApp />*/}
         {/*<ImageCarousel />*/}
         {/*<F />*/}
-            <Api1App />
-            <Api2AApp />
-            <Api3AApp/>
+            <CarouselApp />
+            <CategoryApp />
+            <CardApp/>
     </>
   )
 }

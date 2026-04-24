@@ -39,15 +39,28 @@ const ShortcutGrid = ({ data, onFilterClick, activeCategory }) => {
     );
 };
 
-const Api2AApp = () => {
+const CategoryApp = () => {
     // Ambil juga selectedCategory untuk visual feedback (highlight)
     const { setCategory, resetCategory, selectedCategory } = useStore();
 
     const { data: shortcuts, isLoading } = useQuery({
         queryKey: ['shortcuts'],
         queryFn: async () => {
-            const res = await fetch('https://api.testvalley.kr/main-shortcut/all');
-            return res.json();
+            const res = await fetch('https://kolzsticks.github.io/Free-Ecommerce-Products-Api/main/products.json');
+            const data = await res.json();
+
+            // Map ke format shortcut berdasarkan kategori unik
+            const categoriesMap = new Map();
+            data.forEach(item => {
+                if (!categoriesMap.has(item.category)) {
+                    categoriesMap.set(item.category, {
+                        mainShortcutId: item.category,
+                        title: item.category,
+                        imageUrl: item.image
+                    });
+                }
+            });
+            return Array.from(categoriesMap.values());
         }
     });
 
@@ -77,4 +90,4 @@ const Api2AApp = () => {
         </div>
     );
 };
-export default Api2AApp;
+export default CategoryApp;

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from "react";
-import { BsArrowLeftCircle, BsArrowRightCircle } from "react-icons/bs";
+import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import mockData from '../api1.json';
 import ImageWithFallback from "../components/ImageWithFallback.jsx";
 
@@ -20,16 +20,20 @@ const Carousel = ({ data }) => {
         setSlide((prev) => (prev === 0 ? length - 1 : prev - 1));
     }, [length]);
 
-    // --- Helper: Tentukan Posisi Slide (Active, Prev, Next, atau Hidden) ---
+    // --- Helper: Tentukan Posisi Slide (Active, Prev, Next, Far-Prev, Far-Next, atau Hidden) ---
     const getSlideClass = (index) => {
         if (index === slide) return "slide active";
 
-        // Logic untuk infinite loop (menangani index 0 dan terakhir)
         const prevIndex = slide === 0 ? length - 1 : slide - 1;
         const nextIndex = slide === length - 1 ? 0 : slide + 1;
 
+        const farPrevIndex = prevIndex === 0 ? length - 1 : prevIndex - 1;
+        const farNextIndex = nextIndex === length - 1 ? 0 : nextIndex + 1;
+
         if (index === prevIndex) return "slide prev";
         if (index === nextIndex) return "slide next";
+        if (index === farPrevIndex) return "slide far-prev";
+        if (index === farNextIndex) return "slide far-next";
 
         return "slide hidden"; // Slide sisanya disembunyikan
     };
@@ -64,7 +68,7 @@ const Carousel = ({ data }) => {
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
         >
-            <BsArrowLeftCircle className="arrow arrow-left" onClick={prevSlide} />
+            <BsChevronLeft className="arrow arrow-left" onClick={prevSlide} />
 
             <div className="carousel-track">
                 {data.map((item, index) => {
@@ -73,22 +77,15 @@ const Carousel = ({ data }) => {
                     const shouldRender = className !== "slide hidden";
 
                     return (
-                        <div key={item.id || index} className={className}>
+                        <div 
+                            key={item.id || index} 
+                            className={className}
+                            onClick={() => setSlide(index)}
+                        >
                             {shouldRender && (
-                                <img
-                                    src={item.pcImageUrl}
-                                    alt={item.title}
-                                    className="slide-image"
-                                />
-                            )}
-                            {/* Overlay gelap untuk slide belakang agar slide utama lebih pop-out */}
-                            <div className="overlay"></div>
-                            {Math.abs(slide - index) <= 1 && (
-                                // 2. Ganti <img> dengan ImageWithFallback
                                 <ImageWithFallback
                                     src={item.pcImageUrl}
                                     alt={item.title}
-                                    // loading="lazy" (opsional, krn ImageWithFallback merender div saat error)
                                     className="slide-image"
                                 />
                             )}
@@ -97,7 +94,7 @@ const Carousel = ({ data }) => {
                 })}
             </div>
 
-            <BsArrowRightCircle className="arrow arrow-right" onClick={nextSlide} />
+            <BsChevronRight className="arrow arrow-right" onClick={nextSlide} />
 
             <div className="indicators">
                 {data.map((_, idx) => (
@@ -113,15 +110,22 @@ const Carousel = ({ data }) => {
 };
 
 // ... (Bagian Api1App sisanya sama seperti sebelumnya)
-const Api1App = () => {
+const CarouselApp = () => {
     const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         // ... logic fetch data sama
-        fetch("https://api.testvalley.kr/main-banner/all")
+        fetch("https://kolzsticks.github.io/Free-Ecommerce-Products-Api/main/products.json")
             .then(res => res.json())
-            .then(data => setImages(data))
+            .then(data => {
+                const mappedData = data.slice(0, 12).map(item => ({
+                    id: item.id,
+                    pcImageUrl: item.image,
+                    title: item.name
+                }));
+                setImages(mappedData);
+            })
             .catch(() => setImages(mockData))
             .finally(() => setLoading(false));
     }, []);
@@ -134,4 +138,4 @@ const Api1App = () => {
         </div>
     );
 };
-export default Api1App;
+export default CarouselApp;
