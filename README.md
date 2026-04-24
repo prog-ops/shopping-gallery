@@ -6,11 +6,6 @@ A high-performance, responsive e-commerce homepage interface built with **React*
 
 This project demonstrates modern frontend architecture, focusing on **Core Web Vitals (CWV)**, seamless UX, and efficient state management without heavy dependencies.
 
-![Project Preview](https://placehold.co/1200x600/00d094/ffffff?text=Shopping+Gallery+Preview)
-*(Ganti link di atas dengan screenshot asli aplikasimu setelah deploy)*
-
----
-
 ## 🚀 Key Highlights & Best Practices
 
 This is engineered for performance and scalability.
@@ -33,8 +28,6 @@ This is engineered for performance and scalability.
 - **DRY (Don't Repeat Yourself)**: Reusable components for `Loading`, `ImageWithFallback`, and consistent CSS variables.
 - **Mobile-First Design**: Fully responsive Grid and Flex layouts using CSS Grid (`repeat(auto-fit)` logic) and Media Queries.
 
----
-
 ## 📦 Tech Stack
 
 - **Core**: React 18, Vite
@@ -42,8 +35,6 @@ This is engineered for performance and scalability.
 - **Styling**: CSS Modules / Native CSS Variables (No heavy UI frameworks)
 - **Icons**: React Icons
 - **Language**: JavaScript (ES6+)
-
----
 
 ## 📂 Project Structure
 
