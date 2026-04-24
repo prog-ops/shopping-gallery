@@ -3,6 +3,9 @@ import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import mockData from '../api1.json';
 import ImageWithFallback from "../components/ImageWithFallback.jsx";
 
+/**
+ * Coverflow Carousel gallery
+ */
 const Carousel = ({ data }) => {
     const [slide, setSlide] = useState(0);
     const [touchStart, setTouchStart] = useState(null);
@@ -77,8 +80,8 @@ const Carousel = ({ data }) => {
                     const shouldRender = className !== "slide hidden";
 
                     return (
-                        <div 
-                            key={item.id || index} 
+                        <div
+                            key={item.id || index}
                             className={className}
                             onClick={() => setSlide(index)}
                         >
