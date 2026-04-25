@@ -53,4 +53,11 @@ export const useStore = create((set) => ({
     removeFromFavorites: (productId) => set((state) => ({
         favorites: state.favorites.filter(item => item.id !== productId)
     })),
+
+    // State Modal Detail Produk
+    selectedProduct: null,
+
+    // Actions Modal
+    setSelectedProduct: (product) => set({ selectedProduct: product }),
+    clearSelectedProduct: () => set({ selectedProduct: null }),
 }));
