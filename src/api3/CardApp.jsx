@@ -8,7 +8,7 @@ import { BsHeart, BsHeartFill } from "react-icons/bs";
 
 // Komponen Kartu Produk
 const ProductCard = ({ item }) => {
-    const { addToCart, favorites, toggleFavorite } = useStore();
+    const { addToCart, favorites, toggleFavorite, setSelectedProduct } = useStore();
     const isFavorite = favorites.some(fav => fav.id === item.id);
     
     const mediaUri = item.image;
@@ -17,7 +17,7 @@ const ProductCard = ({ item }) => {
     const rating = item.rating;
 
     return (
-        <div className="product-card">
+        <div className="product-card" onClick={() => setSelectedProduct(item)}>
             <div className="card-image-wrapper">
                 <ImageWithFallback
                     src={mediaUri}
