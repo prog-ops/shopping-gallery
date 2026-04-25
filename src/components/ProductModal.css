@@ -1,0 +1,205 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent agar background galeri tetap kelihatan */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Di atas segalanya */
+    backdrop-filter: blur(3px); /* Tambahan efek blur tipis agar lebih estetik */
+}
+
+.modal-content {
+    width: 80vw;
+    height: 50vh;
+    background-color: white;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: modalPop 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes modalPop {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #f5f5f5;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: 0.2s;
+    z-index: 10;
+}
+
+.modal-close-btn:hover {
+    background: #e0e0e0;
+    transform: rotate(90deg);
+}
+
+.modal-image-container {
+    width: 45%; /* Ambil 45% dari 80vw */
+    height: 100%;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.modal-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Gambar tidak terpotong */
+}
+
+.modal-details {
+    width: 55%; /* Ambil 55% dari 80vw */
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+}
+
+.modal-title {
+    font-size: 1.8rem;
+    color: #333;
+    margin: 0 0 10px 0;
+    line-height: 1.2;
+}
+
+.modal-category {
+    display: inline-block;
+    background-color: #e6fbf5;
+    color: #00d094;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    align-self: flex-start;
+}
+
+.modal-price {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.modal-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffc107;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+.modal-rating-count {
+    color: #999;
+    font-size: 0.9rem;
+    font-weight: normal;
+}
+
+.modal-description {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    flex: 1; /* Biarkan deskripsi mengambil ruang kosong sisa */
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.modal-add-cart-btn {
+    flex: 1;
+    background-color: #00d094;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-add-cart-btn:hover {
+    background-color: #00b37e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 208, 148, 0.3);
+}
+
+.modal-fav-btn {
+    background-color: #fff;
+    border: 2px solid #eee;
+    width: 50px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.modal-fav-btn:hover {
+    border-color: #ff4757;
+    background-color: #fff5f5;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .modal-content {
+        flex-direction: column;
+        width: 90vw;
+        height: 80vh; /* Di HP lebih tinggi karena stack ke bawah */
+    }
+
+    .modal-image-container {
+        width: 100%;
+        height: 40%;
+        padding: 1rem;
+    }
+
+    .modal-details {
+        width: 100%;
+        height: 60%;
+        padding: 1.5rem;
+        justify-content: flex-start;
+    }
+
+    .modal-title {
+        font-size: 1.4rem;
+    }
+    
+    .modal-price {
+        font-size: 1.5rem;
+    }
+}
