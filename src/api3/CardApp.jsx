@@ -4,10 +4,13 @@ import {useQuery} from "@tanstack/react-query";
 import { useStore } from "../store/store";
 import Loading from "../components/Loading.jsx";
 import ImageWithFallback from "../components/ImageWithFallback.jsx";
+import { BsHeart, BsHeartFill } from "react-icons/bs";
 
 // Komponen Kartu Produk
 const ProductCard = ({ item }) => {
-    const { addToCart } = useStore();
+    const { addToCart, favorites, toggleFavorite } = useStore();
+    const isFavorite = favorites.some(fav => fav.id === item.id);
+    
     const mediaUri = item.image;
     const title = item.name;
     const price = item.priceCents;
@@ -20,6 +23,16 @@ const ProductCard = ({ item }) => {
                     src={mediaUri}
                     alt={title}
                 />
+
+                <button 
+                    className="fav-toggle-btn"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavorite(item);
+                    }}
+                >
+                    {isFavorite ? <BsHeartFill color="#ff4757" /> : <BsHeart />}
+                </button>
 
                 {rating && rating.stars && (
                     <span className="discount-badge" style={{ backgroundColor: '#ffc107', color: '#000' }}>

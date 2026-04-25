@@ -9,6 +9,7 @@ import CarouselApp from "./api1/CarouselApp.jsx";
 import CategoryApp from "./api2/CategoryApp.jsx";
 import {CardApp} from "./api3/CardApp.jsx";
 import Cart from "./components/Cart.jsx";
+import Favorites from "./components/Favorites.jsx";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <CategoryApp />
             <CardApp/>
             <Cart />
+            <Favorites />
     </>
   )
 }
