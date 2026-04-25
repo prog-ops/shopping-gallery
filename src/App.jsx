@@ -10,6 +10,7 @@ import CategoryApp from "./api2/CategoryApp.jsx";
 import {CardApp} from "./api3/CardApp.jsx";
 import Cart from "./components/Cart.jsx";
 import Favorites from "./components/Favorites.jsx";
+import ProductModal from "./components/ProductModal.jsx";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <CardApp/>
             <Cart />
             <Favorites />
+            <ProductModal />
     </>
   )
 }
