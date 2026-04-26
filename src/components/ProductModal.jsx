@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useStore } from '../store/store';
 import { BsX, BsCart3, BsHeartFill, BsHeart } from 'react-icons/bs';
 import './ProductModal.css';
@@ -15,10 +15,14 @@ const ProductModal = () => {
     if (!selectedProduct) return null;
 
     const isFavorite = favorites.some(fav => fav.id === selectedProduct.id);
+    const [animating, setAnimating] = useState('none');
 
     return (
         <div className="modal-overlay" onClick={clearSelectedProduct}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div 
+                className={`modal-content ${animating === 'cart' ? 'sliding-to-cart' : ''} ${animating === 'fav' ? 'sliding-to-fav' : ''}`} 
+                onClick={(e) => e.stopPropagation()}
+            >
                 <button className="modal-close-btn" onClick={clearSelectedProduct}>
                     <BsX />
                 </button>
@@ -59,15 +63,23 @@ const ProductModal = () => {
                         <button 
                             className="modal-add-cart-btn"
                             onClick={() => {
+                                setAnimating('cart');
                                 addToCart(selectedProduct);
-                                clearSelectedProduct();
+                                setTimeout(() => {
+                                    clearSelectedProduct();
+                                    setAnimating('none');
+                                }, 500);
                             }}
                         >
                             <BsCart3 /> Masukkan Keranjang
                         </button>
                         <button 
                             className="modal-fav-btn"
-                            onClick={() => toggleFavorite(selectedProduct)}
+                            onClick={() => {
+                                toggleFavorite(selectedProduct);
+                                setAnimating('fav');
+                                setTimeout(() => setAnimating('none'), 500);
+                            }}
                         >
                             {isFavorite ? <BsHeartFill color="#ff4757" /> : <BsHeart />}
                         </button>

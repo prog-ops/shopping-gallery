@@ -439,6 +439,29 @@
   transform: scale(1.1);
 }
 
+/* Animations for adding to cart and favorites */
+@keyframes slideRightCart {
+  0% { transform: translateX(0) scale(1); }
+  50% { transform: translateX(40px) scale(1.05) rotate(3deg); opacity: 0.8; }
+  100% { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+@keyframes slideLeftFav {
+  0% { transform: translateX(0) scale(1); }
+  50% { transform: translateX(-40px) scale(1.05) rotate(-3deg); opacity: 0.8; }
+  100% { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+.sliding-to-cart {
+  animation: slideRightCart 0.5s ease-out;
+  z-index: 50; /* Bring to front while animating */
+}
+
+.sliding-to-fav {
+  animation: slideLeftFav 0.5s ease-out;
+  z-index: 50;
+}
+
 /* --- Loading State --- */
 .loading-skeleton-grid {
   display: grid;

@@ -10,6 +10,7 @@ import { BsHeart, BsHeartFill } from "react-icons/bs";
 const ProductCard = ({ item }) => {
     const { addToCart, favorites, toggleFavorite, setSelectedProduct } = useStore();
     const isFavorite = favorites.some(fav => fav.id === item.id);
+    const [animating, setAnimating] = useState('none');
     
     const mediaUri = item.image;
     const title = item.name;
@@ -17,7 +18,10 @@ const ProductCard = ({ item }) => {
     const rating = item.rating;
 
     return (
-        <div className="product-card" onClick={() => setSelectedProduct(item)}>
+        <div 
+            className={`product-card ${animating === 'cart' ? 'sliding-to-cart' : ''} ${animating === 'fav' ? 'sliding-to-fav' : ''}`} 
+            onClick={() => setSelectedProduct(item)}
+        >
             <div className="card-image-wrapper">
                 <ImageWithFallback
                     src={mediaUri}
@@ -29,6 +33,8 @@ const ProductCard = ({ item }) => {
                     onClick={(e) => {
                         e.stopPropagation();
                         toggleFavorite(item);
+                        setAnimating('fav');
+                        setTimeout(() => setAnimating('none'), 500);
                     }}
                 >
                     {isFavorite ? <BsHeartFill color="#ff4757" /> : <BsHeart />}
@@ -55,6 +61,8 @@ const ProductCard = ({ item }) => {
                     onClick={(e) => {
                         e.stopPropagation();
                         addToCart(item);
+                        setAnimating('cart');
+                        setTimeout(() => setAnimating('none'), 500);
                     }}
                 >
                     Add to Cart
