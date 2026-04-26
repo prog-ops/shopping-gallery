@@ -12,10 +12,11 @@ const ProductModal = () => {
         favorites 
     } = useStore();
 
+    const [animating, setAnimating] = useState('none');
+
     if (!selectedProduct) return null;
 
     const isFavorite = favorites.some(fav => fav.id === selectedProduct.id);
-    const [animating, setAnimating] = useState('none');
 
     return (
         <div className="modal-overlay" onClick={clearSelectedProduct}>
