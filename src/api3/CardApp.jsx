@@ -5,6 +5,7 @@ import { useStore } from "../store/store";
 import Loading from "../components/Loading.jsx";
 import ImageWithFallback from "../components/ImageWithFallback.jsx";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
+import SearchBar from "../components/SearchBar.jsx";
 
 // Komponen Kartu Produk
 const ProductCard = ({ item }) => {
@@ -73,8 +74,8 @@ const ProductCard = ({ item }) => {
 };
 
 export const CardApp = () => {
-    // 1. Ambil state filter dari Zustand
-    const { selectedCategory } = useStore();
+    // 1. Ambil state filter dan pencarian dari Zustand
+    const { selectedCategory, searchQuery } = useStore();
 
     // 2. Ambil data dengan React Query (Otomatis Caching!)
     const { data: allData, isLoading, isError } = useQuery({
@@ -93,24 +94,47 @@ export const CardApp = () => {
     const finalData = isError || !allData ? [] : allData;
 
     // 3. Logic Filter (Client Side)
-    const displayData = selectedCategory === "ALL"
-        ? finalData
-        : finalData.filter(item => {
-            const category = item.category || "";
-            return category.toLowerCase() === selectedCategory.toLowerCase();
-        });
+    // Helper function: hilangkan caps lock (toLowerCase) dan hilangkan strip/spasi
+    const formatStr = (str) => (str || "").toLowerCase().replace(/[-\s]/g, "");
+    const queryFormatted = formatStr(searchQuery);
+
+    const displayData = finalData.filter(item => {
+        // Cek kategori
+        const categoryMatch = selectedCategory === "ALL" || 
+            (item.category || "").toLowerCase() === selectedCategory.toLowerCase();
+        
+        // Cek query pencarian (pada nama, deskripsi, dan keywords)
+        let searchMatch = true;
+        if (queryFormatted) {
+            const nameMatch = formatStr(item.name).includes(queryFormatted);
+            const descMatch = formatStr(item.description).includes(queryFormatted);
+            const keywordMatch = item.keywords ? item.keywords.some(k => formatStr(k).includes(queryFormatted)) : false;
+            searchMatch = nameMatch || descMatch || keywordMatch;
+        }
+
+        return categoryMatch && searchMatch;
+    });
 
     return (
         <div className="section-container">
+            <SearchBar />
+
             {selectedCategory !== "ALL" && (
                 <h3>Kategori: {selectedCategory}</h3>
             )}
 
-            <div className="product-grid">
-                {displayData.map((item, index) => (
-                    <ProductCard key={index} item={item} />
-                ))}
-            </div>
+            {displayData.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '4rem', color: '#888' }}>
+                    <h3 style={{ marginBottom: '1rem' }}>Ups! Produk tidak ditemukan 🥲</h3>
+                    <p>Coba gunakan kata kunci lain atau ubah kategori.</p>
+                </div>
+            ) : (
+                <div className="product-grid">
+                    {displayData.map((item, index) => (
+                        <ProductCard key={index} item={item} />
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
