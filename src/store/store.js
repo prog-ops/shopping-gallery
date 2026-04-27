@@ -60,4 +60,10 @@ export const useStore = create((set) => ({
     // Actions Modal
     setSelectedProduct: (product) => set({ selectedProduct: product }),
     clearSelectedProduct: () => set({ selectedProduct: null }),
+
+    // State Pencarian
+    searchQuery: '',
+
+    // Actions Pencarian
+    setSearchQuery: (query) => set({ searchQuery: query }),
 }));
