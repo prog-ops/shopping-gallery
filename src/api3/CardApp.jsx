@@ -6,21 +6,22 @@ import Loading from "../components/Loading.jsx";
 import ImageWithFallback from "../components/ImageWithFallback.jsx";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import SearchBar from "../components/SearchBar.jsx";
+import HighlightText from "../components/HighlightText.jsx";
 
 // Komponen Kartu Produk
-const ProductCard = ({ item }) => {
+const ProductCard = ({ item, searchQuery }) => {
     const { addToCart, favorites, toggleFavorite, setSelectedProduct } = useStore();
     const isFavorite = favorites.some(fav => fav.id === item.id);
     const [animating, setAnimating] = useState('none');
-    
+
     const mediaUri = item.image;
     const title = item.name;
     const price = item.priceCents;
     const rating = item.rating;
 
     return (
-        <div 
-            className={`product-card ${animating === 'cart' ? 'sliding-to-cart' : ''} ${animating === 'fav' ? 'sliding-to-fav' : ''}`} 
+        <div
+            className={`product-card ${animating === 'cart' ? 'sliding-to-cart' : ''} ${animating === 'fav' ? 'sliding-to-fav' : ''}`}
             onClick={() => setSelectedProduct(item)}
         >
             <div className="card-image-wrapper">
@@ -29,7 +30,7 @@ const ProductCard = ({ item }) => {
                     alt={title}
                 />
 
-                <button 
+                <button
                     className="fav-toggle-btn"
                     onClick={(e) => {
                         e.stopPropagation();
@@ -49,15 +50,17 @@ const ProductCard = ({ item }) => {
             </div>
 
             <div className="card-info">
-                <h4 className="card-title">{title}</h4>
+                <h4 className="card-title">
+                    <HighlightText text={title} highlight={searchQuery} />
+                </h4>
 
                 {price ? (
                     <div className="card-price">
                         ${(price / 100).toFixed(2)}
                     </div>
                 ) : null}
-                
-                <button 
+
+                <button
                     className="add-to-cart-btn"
                     onClick={(e) => {
                         e.stopPropagation();
@@ -100,9 +103,9 @@ export const CardApp = () => {
 
     const displayData = finalData.filter(item => {
         // Cek kategori
-        const categoryMatch = selectedCategory === "ALL" || 
+        const categoryMatch = selectedCategory === "ALL" ||
             (item.category || "").toLowerCase() === selectedCategory.toLowerCase();
-        
+
         // Cek query pencarian (pada nama, deskripsi, dan keywords)
         let searchMatch = true;
         if (queryFormatted) {
@@ -125,13 +128,13 @@ export const CardApp = () => {
 
             {displayData.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '4rem', color: '#888' }}>
-                    <h3 style={{ marginBottom: '1rem' }}>Ups! Produk tidak ditemukan 🥲</h3>
+                    <h3 style={{ marginBottom: '1rem' }}>Ups! Produk tidak ditemukan</h3>
                     <p>Coba gunakan kata kunci lain atau ubah kategori.</p>
                 </div>
             ) : (
                 <div className="product-grid">
                     {displayData.map((item, index) => (
-                        <ProductCard key={index} item={item} />
+                        <ProductCard key={index} item={item} searchQuery={searchQuery} />
                     ))}
                 </div>
             )}
