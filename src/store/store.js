@@ -73,4 +73,18 @@ export const useStore = create((set) => ({
     // Actions Checkout
     setCheckoutOpen: (isOpen) => set({ isCheckoutOpen: isOpen }),
     clearCart: () => set({ cart: [] }),
+
+    // State Navigasi Halaman
+    activePage: 'HOME', // 'HOME' atau 'TRANSACTIONS'
+
+    // Actions Navigasi
+    setActivePage: (page) => set({ activePage: page }),
+
+    // State Riwayat Transaksi
+    transactions: [],
+
+    // Actions Transaksi
+    addTransaction: (transactionData) => set((state) => ({
+        transactions: [{ id: Date.now(), date: new Date().toISOString(), ...transactionData }, ...state.transactions]
+    })),
 }));
