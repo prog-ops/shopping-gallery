@@ -12,17 +12,31 @@ import Cart from "./components/Cart.jsx";
 import Favorites from "./components/Favorites.jsx";
 import ProductModal from "./components/ProductModal.jsx";
 import CheckoutModal from "./components/CheckoutModal.jsx";
+import Navbar from "./components/Navbar.jsx";
+import Transactions from "./components/Transactions.jsx";
+import { useStore } from "./store/store";
 
 function App() {
+  const { activePage } = useStore();
+
   return (
     <>
-            <CarouselApp />
-            <CategoryApp />
-            <CardApp/>
-            <Cart />
-            <Favorites />
-            <ProductModal />
-            <CheckoutModal />
+        <Navbar />
+        {activePage === 'HOME' ? (
+            <>
+                <CarouselApp />
+                <CategoryApp />
+                <CardApp/>
+            </>
+        ) : (
+            <Transactions />
+        )}
+        
+        {/* Drawers and Modals should always be accessible */}
+        <Cart />
+        <Favorites />
+        <ProductModal />
+        <CheckoutModal />
     </>
   )
 }
