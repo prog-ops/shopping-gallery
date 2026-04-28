@@ -4,7 +4,7 @@ import { BsX, BsCreditCard, BsCheckCircle } from 'react-icons/bs';
 import './CheckoutModal.css';
 
 const CheckoutModal = () => {
-    const { isCheckoutOpen, setCheckoutOpen, cart, clearCart } = useStore();
+    const { isCheckoutOpen, setCheckoutOpen, cart, clearCart, addTransaction } = useStore();
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [formData, setFormData] = useState({ name: '', card: '', exp: '', cvc: '' });
@@ -37,6 +37,14 @@ const CheckoutModal = () => {
                 setTimeout(() => {
                     setIsLoading(false);
                     setIsSuccess(true);
+                    
+                    // Simpan riwayat transaksi
+                    addTransaction({
+                        items: [...cart],
+                        totalAmount: totalPrice,
+                        customerName: formData.name
+                    });
+                    
                     clearCart();
                 }, 1500);
             } else {
