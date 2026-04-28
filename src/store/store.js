@@ -66,4 +66,11 @@ export const useStore = create((set) => ({
 
     // Actions Pencarian
     setSearchQuery: (query) => set({ searchQuery: query }),
+
+    // State Checkout
+    isCheckoutOpen: false,
+
+    // Actions Checkout
+    setCheckoutOpen: (isOpen) => set({ isCheckoutOpen: isOpen }),
+    clearCart: () => set({ cart: [] }),
 }));
