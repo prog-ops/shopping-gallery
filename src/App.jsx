@@ -11,6 +11,7 @@ import {CardApp} from "./api3/CardApp.jsx";
 import Cart from "./components/Cart.jsx";
 import Favorites from "./components/Favorites.jsx";
 import ProductModal from "./components/ProductModal.jsx";
+import CheckoutModal from "./components/CheckoutModal.jsx";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Cart />
             <Favorites />
             <ProductModal />
+            <CheckoutModal />
     </>
   )
 }
