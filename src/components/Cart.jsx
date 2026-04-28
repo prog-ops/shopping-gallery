@@ -59,7 +59,14 @@ const Cart = () => {
                             <span>Total</span>
                             <span>${totalPrice.toFixed(2)}</span>
                         </div>
-                        <button className="checkout-btn">Checkout</button>
+                        <button 
+                            className="checkout-btn"
+                            onClick={() => {
+                                useStore.getState().setCheckoutOpen(true);
+                            }}
+                        >
+                            Checkout
+                        </button>
                     </div>
                 )}
             </div>
