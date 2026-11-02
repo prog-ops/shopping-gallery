@@ -1,17 +1,17 @@
 import { create } from 'zustand';
 
 export const useStore = create((set) => ({
-    // State Awal Kategori
+    // Initial Category State
     selectedCategory: 'ALL',
 
-    // Actions Kategori
+    // Category Actions
     setCategory: (category) => set({ selectedCategory: category }),
     resetCategory: () => set({ selectedCategory: 'ALL' }),
 
-    // State Cart
+    // Cart State
     cart: [],
 
-    // Actions Cart
+    // Cart Actions
     addToCart: (product) => set((state) => {
         const existing = state.cart.find(item => item.id === product.id);
         if (existing) {
@@ -38,10 +38,10 @@ export const useStore = create((set) => ({
         })
     })),
 
-    // State Favorites
+    // Favorites State
     favorites: [],
 
-    // Actions Favorites
+    // Favorites Actions
     toggleFavorite: (product) => set((state) => {
         const isFavorite = state.favorites.some(item => item.id === product.id);
         if (isFavorite) {
@@ -54,36 +54,36 @@ export const useStore = create((set) => ({
         favorites: state.favorites.filter(item => item.id !== productId)
     })),
 
-    // State Modal Detail Produk
+    // Product Detail Modal State
     selectedProduct: null,
 
-    // Actions Modal
+    // Modal Actions
     setSelectedProduct: (product) => set({ selectedProduct: product }),
     clearSelectedProduct: () => set({ selectedProduct: null }),
 
-    // State Pencarian
+    // Search State
     searchQuery: '',
 
-    // Actions Pencarian
+    // Search Actions
     setSearchQuery: (query) => set({ searchQuery: query }),
 
-    // State Checkout
+    // Checkout State
     isCheckoutOpen: false,
 
-    // Actions Checkout
+    // Checkout Actions
     setCheckoutOpen: (isOpen) => set({ isCheckoutOpen: isOpen }),
     clearCart: () => set({ cart: [] }),
 
-    // State Navigasi Halaman
-    activePage: 'HOME', // 'HOME' atau 'TRANSACTIONS'
+    // Page Navigation State
+    activePage: 'HOME', // 'HOME' or 'TRANSACTIONS'
 
-    // Actions Navigasi
+    // Navigation Actions
     setActivePage: (page) => set({ activePage: page }),
 
-    // State Riwayat Transaksi
+    // Transaction History State
     transactions: [],
 
-    // Actions Transaksi
+    // Transaction Actions
     addTransaction: (transactionData) => set((state) => ({
         transactions: [{ id: Date.now(), date: new Date().toISOString(), ...transactionData }, ...state.transactions]
     })),

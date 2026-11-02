@@ -4,12 +4,12 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent agar background galeri tetap kelihatan */
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent so the gallery background remains visible */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 2000; /* Di atas segalanya */
-    backdrop-filter: blur(3px); /* Tambahan efek blur tipis agar lebih estetik */
+    z-index: 2000; /* Above main content and drawers */
+    backdrop-filter: blur(3px); /* Subtle blur effect for visual polish */
 }
 
 .modal-content {
@@ -54,7 +54,7 @@
 }
 
 .modal-image-container {
-    width: 45%; /* Ambil 45% dari 80vw */
+    width: 45%; /* Occupy 45% of the 80vw modal width */
     height: 100%;
     background-color: #f9f9f9;
     display: flex;
@@ -66,11 +66,11 @@
 .modal-image {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Gambar tidak terpotong */
+    object-fit: contain; /* Prevent product image from being cropped */
 }
 
 .modal-details {
-    width: 55%; /* Ambil 55% dari 80vw */
+    width: 55%; /* Occupy 55% of the 80vw modal width */
     padding: 2.5rem;
     display: flex;
     flex-direction: column;
@@ -125,7 +125,7 @@
     line-height: 1.6;
     margin-bottom: 2rem;
     font-size: 1rem;
-    flex: 1; /* Biarkan deskripsi mengambil ruang kosong sisa */
+    flex: 1; /* Let the description fill remaining vertical space */
 }
 
 .modal-actions {
@@ -179,7 +179,7 @@
     .modal-content {
         flex-direction: column;
         width: 90vw;
-        height: 80vh; /* Di HP lebih tinggi karena stack ke bawah */
+        height: 80vh; /* Taller modal on mobile since sections stack vertically */
     }
 
     .modal-image-container {
@@ -198,7 +198,7 @@
     .modal-title {
         font-size: 1.4rem;
     }
-    
+
     .modal-price {
         font-size: 1.5rem;
     }

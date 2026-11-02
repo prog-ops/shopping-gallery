@@ -1,110 +1,120 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
-import mockData from '../api1.json';
+import mockData from "../api1.json";
 import ImageWithFallback from "../components/ImageWithFallback.jsx";
 
 /**
- * Coverflow Carousel gallery
+ * Coverflow Carousel gallery powered by Embla Carousel (React 19 compatible)
  */
 const Carousel = ({ data }) => {
-    const [slide, setSlide] = useState(0);
-    const [touchStart, setTouchStart] = useState(null);
-    const [touchEnd, setTouchEnd] = useState(null);
-    const timeoutRef = useRef(null);
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [emblaRef, emblaApi] = useEmblaCarousel(
+        { loop: true, align: "center", skipSnaps: false },
+        [Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true })]
+    );
 
-    const length = data.length;
+    const length = data?.length ?? 0;
 
-    // --- Logic Navigasi ---
-    const nextSlide = useCallback(() => {
-        setSlide((prev) => (prev === length - 1 ? 0 : prev + 1));
-    }, [length]);
-
+    // Navigation handlers
     const prevSlide = useCallback(() => {
-        setSlide((prev) => (prev === 0 ? length - 1 : prev - 1));
-    }, [length]);
+        emblaApi?.scrollPrev();
+    }, [emblaApi]);
 
-    // --- Helper: Tentukan Posisi Slide (Active, Prev, Next, Far-Prev, Far-Next, atau Hidden) ---
-    const getSlideClass = (index) => {
-        if (index === slide) return "slide active";
+    const nextSlide = useCallback(() => {
+        emblaApi?.scrollNext();
+    }, [emblaApi]);
 
-        const prevIndex = slide === 0 ? length - 1 : slide - 1;
-        const nextIndex = slide === length - 1 ? 0 : slide + 1;
+    const scrollTo = useCallback(
+        (index) => {
+            emblaApi?.scrollTo(index);
+        },
+        [emblaApi]
+    );
 
-        const farPrevIndex = prevIndex === 0 ? length - 1 : prevIndex - 1;
-        const farNextIndex = nextIndex === length - 1 ? 0 : nextIndex + 1;
-
-        if (index === prevIndex) return "slide prev";
-        if (index === nextIndex) return "slide next";
-        if (index === farPrevIndex) return "slide far-prev";
-        if (index === farNextIndex) return "slide far-next";
-
-        return "slide hidden"; // Slide sisanya disembunyikan
-    };
-
-    // --- Auto Play & Swipe (Sama seperti sebelumnya) ---
+    // Sync active slide state with Embla Carousel selection events
     useEffect(() => {
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        timeoutRef.current = setTimeout(nextSlide, 4000);
-        return () => clearTimeout(timeoutRef.current);
-    }, [slide, nextSlide]);
+        if (!emblaApi) return;
 
-    const onTouchStart = (e) => {
-        setTouchEnd(null);
-        setTouchStart(e.targetTouches[0].clientX);
-    };
-    const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
-    const onTouchEnd = () => {
-        if (!touchStart || !touchEnd) return;
-        const distance = touchStart - touchEnd;
-        if (distance > 50) nextSlide();
-        if (distance < -50) prevSlide();
+        const onSelect = () => {
+            setSelectedIndex(emblaApi.selectedScrollSnap());
+        };
+
+        emblaApi.on("select", onSelect);
+        emblaApi.on("reInit", onSelect);
+
+        return () => {
+            emblaApi.off("select", onSelect);
+            emblaApi.off("reInit", onSelect);
+        };
+    }, [emblaApi]);
+
+    // Determine slide position state (active, prev, next, far-prev, far-next, or hidden)
+    const getSlideState = (index) => {
+        if (index === selectedIndex) return "active";
+        if (length <= 1) return "hidden";
+
+        let offset = (index - selectedIndex + length) % length;
+        if (offset > length / 2) offset -= length;
+
+        if (offset === -1) return "prev";
+        if (offset === 1) return "next";
+        if (offset === -2) return "far-prev";
+        if (offset === 2) return "far-next";
+
+        return "hidden";
     };
 
     if (!data || length === 0) return null;
 
     return (
-        <div
-            className="carousel-container"
-            onMouseEnter={() => clearTimeout(timeoutRef.current)}
-            onMouseLeave={() => timeoutRef.current = setTimeout(nextSlide, 4000)}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
-        >
-            <BsChevronLeft className="arrow arrow-left" onClick={prevSlide} />
+        <div className="carousel-container">
+            <BsChevronLeft
+                className="arrow arrow-left"
+                onClick={prevSlide}
+                aria-label="Previous slide"
+            />
 
-            <div className="carousel-track">
-                {data.map((item, index) => {
-                    // Hanya render gambar jika dia Active, Prev, atau Next (Optimasi Performa)
-                    const className = getSlideClass(index);
-                    const shouldRender = className !== "slide hidden";
+            <div className="carousel-viewport" ref={emblaRef}>
+                <div className="carousel-track">
+                    {data.map((item, index) => {
+                        const slideState = getSlideState(index);
 
-                    return (
-                        <div
-                            key={item.id || index}
-                            className={className}
-                            onClick={() => setSlide(index)}
-                        >
-                            {shouldRender && (
-                                <ImageWithFallback
-                                    src={item.pcImageUrl}
-                                    alt={item.title}
-                                    className="slide-image"
-                                />
-                            )}
-                        </div>
-                    );
-                })}
+                        return (
+                            <div
+                                key={item.id ?? item.mainBannerId ?? index}
+                                className={`embla-slide ${slideState}`}
+                                onClick={() => scrollTo(index)}
+                            >
+                                <div className="slide-card">
+                                    <ImageWithFallback
+                                        src={item.pcImageUrl}
+                                        alt={item.title}
+                                        className="slide-image"
+                                        loading={slideState === "active" ? "eager" : "lazy"}
+                                    />
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
 
-            <BsChevronRight className="arrow arrow-right" onClick={nextSlide} />
+            <BsChevronRight
+                className="arrow arrow-right"
+                onClick={nextSlide}
+                aria-label="Next slide"
+            />
 
             <div className="indicators">
-                {data.map((_, idx) => (
+                {data.map((item, idx) => (
                     <button
-                        key={idx}
-                        onClick={() => setSlide(idx)}
-                        className={slide === idx ? "indicator active" : "indicator"}
+                        key={item.id ?? item.mainBannerId ?? idx}
+                        type="button"
+                        onClick={() => scrollTo(idx)}
+                        aria-label={`Go to slide ${idx + 1}`}
+                        className={selectedIndex === idx ? "indicator active" : "indicator"}
                     />
                 ))}
             </div>
@@ -112,20 +122,19 @@ const Carousel = ({ data }) => {
     );
 };
 
-// ... (Bagian Api1App sisanya sama seperti sebelumnya)
 const CarouselApp = () => {
     const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // ... logic fetch data sama
+        // Fetch banner product images with local mock fallback
         fetch("https://kolzsticks.github.io/Free-Ecommerce-Products-Api/main/products.json")
-            .then(res => res.json())
-            .then(data => {
-                const mappedData = data.slice(0, 12).map(item => ({
+            .then((res) => res.json())
+            .then((data) => {
+                const mappedData = data.slice(0, 12).map((item) => ({
                     id: item.id,
                     pcImageUrl: item.image,
-                    title: item.name
+                    title: item.name,
                 }));
                 setImages(mappedData);
             })
@@ -141,4 +150,5 @@ const CarouselApp = () => {
         </div>
     );
 };
+
 export default CarouselApp;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useStore } from '../store/store';
 import { BsX, BsCreditCard, BsCheckCircle } from 'react-icons/bs';
 import './CheckoutModal.css';
@@ -18,8 +18,8 @@ const CheckoutModal = () => {
         setIsLoading(true);
 
         try {
-            // Simulasi API Payment menggunakan dummy endpoint (JSONPlaceholder POST)
-            // Aman di sisi client dan juga mensimulasikan network request nyata
+            // Simulate Payment API using a dummy endpoint (JSONPlaceholder POST)
+            // Safe on the client side while simulating a real network request
             const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
                 method: 'POST',
                 headers: {
@@ -33,32 +33,32 @@ const CheckoutModal = () => {
             });
 
             if (response.ok) {
-                // Tambahan delay untuk mensimulasikan pemrosesan bank yang realistis
+                // Additional delay to simulate realistic bank processing latency
                 setTimeout(() => {
                     setIsLoading(false);
                     setIsSuccess(true);
-                    
-                    // Simpan riwayat transaksi
+
+                    // Save transaction history
                     addTransaction({
                         items: [...cart],
                         totalAmount: totalPrice,
                         customerName: formData.name
                     });
-                    
+
                     clearCart();
                 }, 1500);
             } else {
                 throw new Error("Payment failed");
             }
-        } catch (error) {
-            alert("Maaf, terjadi kesalahan pada gateway pembayaran.");
+        } catch {
+            alert("Sorry, an error occurred with the payment gateway.");
             setIsLoading(false);
         }
     };
 
     const handleClose = () => {
         setCheckoutOpen(false);
-        setTimeout(() => setIsSuccess(false), 300); // reset after transition
+        setTimeout(() => setIsSuccess(false), 300); // Reset after close transition
     };
 
     return (
@@ -69,31 +69,31 @@ const CheckoutModal = () => {
                 {isSuccess ? (
                     <div className="checkout-success">
                         <BsCheckCircle className="success-icon" />
-                        <h2>Pembayaran Berhasil!</h2>
-                        <p>Terima kasih atas pesanan Anda. Detail transaksi telah dikirim ke email.</p>
-                        <button className="done-btn" onClick={handleClose}>Kembali Belanja</button>
+                        <h2>Payment Successful!</h2>
+                        <p>Thank you for your order. Your transaction details have been sent to your email.</p>
+                        <button className="done-btn" onClick={handleClose}>Continue Shopping</button>
                     </div>
                 ) : (
                     <div className="checkout-form-container">
-                        <h2>Checkout Pembayaran</h2>
+                        <h2>Payment Checkout</h2>
                         <div className="checkout-summary">
-                            <span>Total Tagihan:</span>
+                            <span>Total Amount:</span>
                             <span className="checkout-total">${totalPrice.toFixed(2)}</span>
                         </div>
 
                         <form onSubmit={handlePayment} className="checkout-form">
                             <div className="form-group">
-                                <label>Nama di Kartu</label>
+                                <label>Name on Card</label>
                                 <input
                                     type="text"
                                     required
                                     placeholder="John Doe"
                                     value={formData.name}
-                                    onChange={e => setFormData({...formData, name: e.target.value})}
+                                    onChange={e => setFormData({ ...formData, name: e.target.value })}
                                 />
                             </div>
                             <div className="form-group">
-                                <label>Nomor Kartu Kredit / Debit</label>
+                                <label>Credit / Debit Card Number</label>
                                 <div className="card-input-wrapper">
                                     <BsCreditCard className="card-icon" />
                                     <input
@@ -102,20 +102,20 @@ const CheckoutModal = () => {
                                         placeholder="0000 0000 0000 0000"
                                         maxLength="19"
                                         value={formData.card}
-                                        onChange={e => setFormData({...formData, card: e.target.value})}
+                                        onChange={e => setFormData({ ...formData, card: e.target.value })}
                                     />
                                 </div>
                             </div>
                             <div className="form-row">
                                 <div className="form-group half">
-                                    <label>Masa Berlaku</label>
+                                    <label>Expiration Date</label>
                                     <input
                                         type="text"
                                         required
                                         placeholder="MM/YY"
                                         maxLength="5"
                                         value={formData.exp}
-                                        onChange={e => setFormData({...formData, exp: e.target.value})}
+                                        onChange={e => setFormData({ ...formData, exp: e.target.value })}
                                     />
                                 </div>
                                 <div className="form-group half">
@@ -126,13 +126,13 @@ const CheckoutModal = () => {
                                         placeholder="123"
                                         maxLength="3"
                                         value={formData.cvc}
-                                        onChange={e => setFormData({...formData, cvc: e.target.value})}
+                                        onChange={e => setFormData({ ...formData, cvc: e.target.value })}
                                     />
                                 </div>
                             </div>
 
                             <button type="submit" className="pay-btn" disabled={isLoading}>
-                                {isLoading ? "Memproses Transaksi..." : `Bayar $${totalPrice.toFixed(2)}`}
+                                {isLoading ? "Processing Transaction..." : `Pay $${totalPrice.toFixed(2)}`}
                             </button>
                         </form>
                     </div>

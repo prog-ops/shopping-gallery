@@ -1,4 +1,3 @@
-import React from 'react';
 import { useStore } from '../store/store';
 import { BsHeartFill, BsHeart, BsTrash } from 'react-icons/bs';
 import './Favorites.css';
@@ -19,15 +18,15 @@ const Favorites = () => {
             {/* Favorites Drawer */}
             <div className="fav-drawer">
                 <div className="fav-header">
-                    <h2>Favorit Saya</h2>
-                    <span className="fav-count">{totalFavorites} Item</span>
+                    <h2>My Favorites</h2>
+                    <span className="fav-count">{totalFavorites} {totalFavorites === 1 ? 'Item' : 'Items'}</span>
                 </div>
 
                 <div className="fav-items">
                     {favorites.length === 0 ? (
                         <div className="empty-fav">
                             <BsHeart size={48} color="#ccc" />
-                            <p>Belum ada item favorit</p>
+                            <p>No favorite items yet</p>
                         </div>
                     ) : (
                         favorites.map((item) => (
@@ -38,7 +37,7 @@ const Favorites = () => {
                                     <div className="fav-item-price">${(item.priceCents / 100).toFixed(2)}</div>
                                     <div className="fav-item-actions">
                                         <button className="remove-btn" onClick={() => removeFromFavorites(item.id)}>
-                                            <BsTrash /> Hapus
+                                            <BsTrash /> Remove
                                         </button>
                                     </div>
                                 </div>

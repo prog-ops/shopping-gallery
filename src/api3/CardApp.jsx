@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import mockData from '../api3.json';
-import {useQuery} from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useStore } from "../store/store";
 import Loading from "../components/Loading.jsx";
 import ImageWithFallback from "../components/ImageWithFallback.jsx";
@@ -8,7 +7,7 @@ import { BsHeart, BsHeartFill } from "react-icons/bs";
 import SearchBar from "../components/SearchBar.jsx";
 import HighlightText from "../components/HighlightText.jsx";
 
-// Komponen Kartu Produk
+// Product Card Component
 const ProductCard = ({ item, searchQuery }) => {
     const { addToCart, favorites, toggleFavorite, setSelectedProduct } = useStore();
     const isFavorite = favorites.some(fav => fav.id === item.id);
@@ -77,36 +76,35 @@ const ProductCard = ({ item, searchQuery }) => {
 };
 
 export const CardApp = () => {
-    // 1. Ambil state filter dan pencarian dari Zustand
+    // 1. Retrieve category filter and search query state from Zustand
     const { selectedCategory, searchQuery } = useStore();
 
-    // 2. Ambil data dengan React Query (Otomatis Caching!)
+    // 2. Fetch products using React Query (automatic caching)
     const { data: allData, isLoading, isError } = useQuery({
-        queryKey: ['products'], // Key unik untuk cache
+        queryKey: ['products'], // Unique cache key
         queryFn: async () => {
             const res = await fetch('https://kolzsticks.github.io/Free-Ecommerce-Products-Api/main/products.json');
             if (!res.ok) throw new Error('Network error');
-            const json = await res.json();
-            return json;
+            return res.json();
         },
     });
 
-    // Handle Loading & Error
+    // Handle Loading & Error states
     if (isLoading) return <Loading />;
 
     const finalData = isError || !allData ? [] : allData;
 
-    // 3. Logic Filter (Client Side)
-    // Helper function: hilangkan caps lock (toLowerCase) dan hilangkan strip/spasi
+    // 3. Client-side Filter Logic
+    // Helper function: normalize to lowercase and strip hyphens/whitespace
     const formatStr = (str) => (str || "").toLowerCase().replace(/[-\s]/g, "");
     const queryFormatted = formatStr(searchQuery);
 
     const displayData = finalData.filter(item => {
-        // Cek kategori
+        // Check category match
         const categoryMatch = selectedCategory === "ALL" ||
             (item.category || "").toLowerCase() === selectedCategory.toLowerCase();
 
-        // Cek query pencarian (pada nama, deskripsi, dan keywords)
+        // Check search query match (across name, description, and keywords)
         let searchMatch = true;
         if (queryFormatted) {
             const nameMatch = formatStr(item.name).includes(queryFormatted);
@@ -123,18 +121,18 @@ export const CardApp = () => {
             <SearchBar />
 
             {selectedCategory !== "ALL" && (
-                <h3>Kategori: {selectedCategory}</h3>
+                <h3>Category: {selectedCategory}</h3>
             )}
 
             {displayData.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '4rem', color: '#888' }}>
-                    <h3 style={{ marginBottom: '1rem' }}>Ups! Produk tidak ditemukan</h3>
-                    <p>Coba gunakan kata kunci lain atau ubah kategori.</p>
+                    <h3 style={{ marginBottom: '1rem' }}>Oops! No products found</h3>
+                    <p>Try using different keywords or changing the category.</p>
                 </div>
             ) : (
                 <div className="product-grid">
                     {displayData.map((item, index) => (
-                        <ProductCard key={index} item={item} searchQuery={searchQuery} />
+                        <ProductCard key={item.id ?? index} item={item} searchQuery={searchQuery} />
                     ))}
                 </div>
             )}

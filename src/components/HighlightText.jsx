@@ -1,25 +1,25 @@
-import React from 'react';
-
 const HighlightText = ({ text, highlight }) => {
-    // Jika tidak ada kata kunci pencarian, kembalikan text aslinya
+    // If there is no search keyword, return the original text
     if (!highlight || !highlight.trim()) return <>{text}</>;
-    
-    // Kita escape karakter khusus agar tidak merusak Regex (jika user mengetik karakter aneh)
+
+    const trimmedHighlight = highlight.trim();
+
+    // Escape special characters so user input does not break the RegExp
     const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const safeHighlight = escapeRegExp(highlight.trim());
-    
-    // Pecah text berdasarkan highlight (case-insensitive)
+    const safeHighlight = escapeRegExp(trimmedHighlight);
+
+    // Split text based on the highlighted keyword (case-insensitive)
     const regex = new RegExp(`(${safeHighlight})`, 'gi');
     const parts = text.split(regex);
-    
+
     return (
         <span>
-            {parts.map((part, i) => 
-                regex.test(part) ? (
-                    <mark key={i} style={{ 
-                        backgroundColor: '#ffeb3b', 
-                        color: '#000', 
-                        padding: '0 2px', 
+            {parts.map((part, i) =>
+                part.toLowerCase() === trimmedHighlight.toLowerCase() ? (
+                    <mark key={i} style={{
+                        backgroundColor: '#ffeb3b',
+                        color: '#000',
+                        padding: '0 2px',
                         borderRadius: '3px',
                         fontWeight: 'bold'
                     }}>

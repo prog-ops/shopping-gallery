@@ -1,4 +1,3 @@
-import React from 'react';
 import { useStore } from '../store/store';
 import { BsShopWindow, BsReceiptCutoff } from 'react-icons/bs';
 import './Navbar.css';
@@ -13,17 +12,17 @@ const Navbar = () => {
                 <h2>E-Shop Gallery</h2>
             </div>
             <div className="navbar-menu">
-                <button 
+                <button
                     className={`nav-btn ${activePage === 'HOME' ? 'active' : ''}`}
                     onClick={() => setActivePage('HOME')}
                 >
-                    <BsShopWindow /> Beranda Utama
+                    <BsShopWindow /> Home
                 </button>
-                <button 
+                <button
                     className={`nav-btn ${activePage === 'TRANSACTIONS' ? 'active' : ''}`}
                     onClick={() => setActivePage('TRANSACTIONS')}
                 >
-                    <BsReceiptCutoff /> Riwayat Transaksi
+                    <BsReceiptCutoff /> Transaction History
                 </button>
             </div>
         </nav>

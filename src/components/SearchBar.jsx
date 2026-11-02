@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useStore } from '../store/store';
 import { BsSearch } from 'react-icons/bs';
 import { useQuery } from "@tanstack/react-query";
@@ -7,15 +7,14 @@ import './SearchBar.css';
 const SearchBar = () => {
     const { searchQuery, setSearchQuery } = useStore();
     const [localQuery, setLocalQuery] = useState(searchQuery);
-    const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
-    
+
     const wrapperRef = useRef(null);
 
-    // Ambil data produk (ini akan langsung instan karena sudah di-cache oleh React Query di CardApp)
+    // Retrieve product data (instantaneous since it is already cached by React Query in CardApp)
     const { data: allData } = useQuery({ queryKey: ['products'], staleTime: Infinity });
 
-    // Handle klik di luar untuk menutup suggestions
+    // Close suggestions dropdown when clicking outside
     useEffect(() => {
         function handleClickOutside(event) {
             if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
@@ -24,27 +23,23 @@ const SearchBar = () => {
         }
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [wrapperRef]);
+    }, []);
 
-    // Update suggestions saat ngetik
-    useEffect(() => {
+    // Compute up to 5 unique top suggestions while typing
+    const suggestions = useMemo(() => {
         if (!localQuery.trim() || !allData) {
-            setSuggestions([]);
-            return;
+            return [];
         }
         const q = localQuery.toLowerCase();
-        
-        // Cari max 5 saran teratas (tanpa duplikat)
-        const matches = Array.from(new Set(
+
+        return Array.from(new Set(
             allData
                 .filter(p => p.name.toLowerCase().includes(q))
                 .map(p => p.name)
         )).slice(0, 5);
-        
-        setSuggestions(matches);
     }, [localQuery, allData]);
 
-    // Debounce effect: tunggu user selesai ngetik 300ms baru update store utama
+    // Debounce effect: wait 300ms after the user stops typing before updating the main store
     useEffect(() => {
         const handler = setTimeout(() => {
             setSearchQuery(localQuery);
@@ -63,10 +58,10 @@ const SearchBar = () => {
         <div className="search-bar-wrapper" ref={wrapperRef}>
             <div className="search-bar-container">
                 <BsSearch className="search-icon" />
-                <input 
-                    type="text" 
-                    className="search-input" 
-                    placeholder="Cari produk impianmu..." 
+                <input
+                    type="text"
+                    className="search-input"
+                    placeholder="Search for your dream products..."
                     value={localQuery}
                     onChange={(e) => {
                         setLocalQuery(e.target.value);
@@ -80,8 +75,8 @@ const SearchBar = () => {
             {showSuggestions && suggestions.length > 0 && (
                 <div className="search-suggestions">
                     {suggestions.map((suggestion, idx) => (
-                        <div 
-                            key={idx} 
+                        <div
+                            key={idx}
                             className="suggestion-item"
                             onClick={() => handleSuggestionClick(suggestion)}
                         >

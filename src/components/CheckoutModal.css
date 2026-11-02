@@ -8,7 +8,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 3000; /* Di atas segalanya termasuk Cart Drawer */
+    z-index: 3000; /* Above all other layers including the Cart Drawer */
     backdrop-filter: blur(5px);
 }
 

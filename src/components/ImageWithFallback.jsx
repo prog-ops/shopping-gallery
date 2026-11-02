@@ -1,18 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { BiImage } from "react-icons/bi"; // Ikon gambar generik
+import { useState } from "react";
+import { BiImage } from "react-icons/bi"; // Generic image icon
 
-const ImageWithFallback = ({ src, alt, className, ...props }) => {
-    const [error, setError] = useState(false);
+const ImageWithFallback = ({ src, alt, className = "", ...props }) => {
+    // Track which src failed so changing src automatically resets the error state
+    const [failedSrc, setFailedSrc] = useState(null);
 
-    // Reset error jika src berubah (misal saat carousel geser)
-    useEffect(() => {
-        setError(false);
-    }, [src]);
-
-    // Logic: Jika error atau src kosong, tampilkan Placeholder
-    if (error || !src) {
+    // If src is missing or failed to load, render the fallback placeholder
+    if (!src || failedSrc === src) {
         return (
-            <div className={`fallback-placeholder ${className}`}>
+            <div className={`fallback-placeholder ${className}`.trim()}>
                 <BiImage className="fallback-icon" />
             </div>
         );
@@ -23,7 +19,7 @@ const ImageWithFallback = ({ src, alt, className, ...props }) => {
             src={src}
             alt={alt}
             className={className}
-            onError={() => setError(true)} // Trigger saat gambar gagal load
+            onError={() => setFailedSrc(src)} // Triggered when the image fails to load
             {...props}
         />
     );

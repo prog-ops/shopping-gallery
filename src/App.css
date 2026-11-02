@@ -1,6 +1,6 @@
 /* 1. Global Variables & Reset */
 :root {
-  --primary: #00d094; /* Warna hijau brand modern (bisa diganti) */
+  --primary: #00d094; /* Modern brand green color (customizable) */
   --text-main: #333333;
   --text-muted: #999999;
   --bg-error: #fff5f5;
@@ -8,8 +8,8 @@
   --radius-md: 12px;
   --radius-sm: 8px;
   --transition-fast: 0.3s ease;
-  --carousel-ratio-pc: 3 / 1;    /* Rasio lebar:tinggi PC */
-  --carousel-ratio-mo: 1 / 1;    /* Rasio untuk Mobile */
+  --carousel-ratio-pc: 3 / 1;    /* Desktop width:height aspect ratio */
+  --carousel-ratio-mo: 1 / 1;    /* Mobile aspect ratio */
 }
 
 * {
@@ -19,118 +19,131 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1rem; /* Padding samping agar tidak mepet di mobile */
+  padding: 0 1rem; /* Horizontal padding to prevent content touching screen edges on mobile */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: var(--text-main);
   background-color: white;
 }
 
-/* 2. Layout Containers (Pengganti .App & .App2) */
-/* Gunakan class ini untuk membungkus setiap section (Banner, Shortcut, dll) */
+/* 2. Layout Containers */
+/* Use this class to wrap each page section (Banner, Shortcut, Product Grid, etc.) */
 .section-container {
   width: 100%;
   display: flex;
   flex-direction: column;
-  margin-bottom: 3rem; /* Jarak antar section */
+  margin-bottom: 3rem; /* Spacing between sections */
   position: relative;
 }
 
-/* 3. Modern Carousel Styles (Wajib untuk komponen sebelumnya) */
+/* 3. Modern Coverflow Carousel Styles (Embla Carousel) */
 .carousel-container {
   position: relative;
   width: calc(100% + 2rem); /* Break out of #root padding */
   max-width: 100vw;
   margin-left: -1rem;
-  aspect-ratio: 2.3 / 1; /* Cukup tinggi untuk scale 1.2 */
   overflow: hidden;
-  padding: 2rem 0 4rem 0; /* Ruang untuk shadow dan indikator */
 }
 
-.carousel-wrapper {
+.carousel-viewport {
   width: 100%;
-  height: 100%;
-  position: relative;
+  overflow: hidden;
+  padding: 2.5rem 0 4rem 0; /* Vertical space for active card shadow and pagination indicators */
 }
 
-/* Track untuk menampung slide */
+/* Flex track managed by Embla Carousel */
 .carousel-track {
-  position: relative;
-  width: 100%;
-  height: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
+  touch-action: pan-y pinch-zoom;
 }
 
-/* Slide Transition Logic (Fade Effect) */
-.slide {
-  position: absolute;
-  width: 32%; /* Ukuran ideal agar 5 elemen fit */
-  aspect-ratio: 1 / 1;
-  height: auto;
-  border: 6px solid white; /* Frame putih tebal ala polaroid */
-  border-radius: 4px;
-  overflow: hidden;
-  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s, z-index 0.6s;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  background: white;
-  will-change: transform, opacity;
+/* Embla slide slot & Coverflow card styling */
+.embla-slide {
+  flex: 0 0 19%;
+  min-width: 0;
+  position: relative;
   cursor: pointer;
 }
 
-/* --- STATES --- */
-
-/* 1. Active (Tengah, Paling Depan & Paling Ditonjolkan) */
-.slide.active {
-  transform: translateX(0) scale(1.25); /* Skala paling besar */
+.embla-slide.active {
   z-index: 10;
-  opacity: 1;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
 }
 
-/* 2. Previous (Kiri 1) */
-.slide.prev {
-  transform: translateX(-65%) scale(0.9);
+.embla-slide.prev,
+.embla-slide.next {
   z-index: 8;
-  opacity: 1;
 }
 
-/* 3. Next (Kanan 1) */
-.slide.next {
-  transform: translateX(65%) scale(0.9);
-  z-index: 8;
-  opacity: 1;
-}
-
-/* 4. Far Previous (Kiri 2) */
-.slide.far-prev {
-  transform: translateX(-120%) scale(0.65);
+.embla-slide.far-prev,
+.embla-slide.far-next {
   z-index: 6;
+}
+
+.embla-slide.hidden {
+  z-index: 1;
+}
+
+.slide-card {
+  width: 165%;
+  margin-left: -32.5%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  border: 6px solid white; /* Thick Polaroid-style white frame */
+  border-radius: 4px;
+  overflow: hidden;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s, box-shadow 0.6s;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background: white;
+  will-change: transform, opacity;
+}
+
+/* --- SLIDE STATES --- */
+
+/* 1. Active (Center, Foreground & Highlighted) */
+.embla-slide.active .slide-card {
+  transform: scale(1.1); /* Largest scale */
+  opacity: 1;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* 2. Previous (Left 1) */
+.embla-slide.prev .slide-card {
+  transform: scale(0.84);
   opacity: 1;
 }
 
-/* 5. Far Next (Kanan 2) */
-.slide.far-next {
-  transform: translateX(120%) scale(0.65);
-  z-index: 6;
+/* 3. Next (Right 1) */
+.embla-slide.next .slide-card {
+  transform: scale(0.84);
   opacity: 1;
 }
 
-/* 6. Hidden (Slide lainnya) */
-.slide.hidden {
-  transform: translateX(0) scale(0.4);
+/* 4. Far Previous (Left 2) */
+.embla-slide.far-prev .slide-card {
+  transform: scale(0.62);
+  opacity: 1;
+}
+
+/* 5. Far Next (Right 2) */
+.embla-slide.far-next .slide-card {
+  transform: scale(0.62);
+  opacity: 1;
+}
+
+/* 6. Hidden (Remaining slides) */
+.embla-slide.hidden .slide-card {
+  transform: scale(0.4);
   opacity: 0;
-  z-index: 0;
   pointer-events: none;
 }
 
 .slide-image {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Gambar cover area tanpa distorsi */
+  object-fit: contain; /* Fit image cleanly without distortion */
 }
 
-/* Overlay Gelap (untuk slide samping) */
+/* Dark Overlay (for side slides) */
 .overlay {
   position: absolute;
   top: 0;
@@ -149,7 +162,7 @@
   top: 45%;
   transform: translateY(-50%);
   z-index: 20;
-  font-size: 4rem; /* Panah diperbesar agar mudah di-klik */
+  font-size: 4rem; /* Large clickable arrows */
   color: rgba(200, 200, 200, 0.8);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
@@ -158,10 +171,10 @@
   color: rgba(150, 150, 150, 1);
   transform: translateY(-50%) scale(1.1);
 }
-.arrow-left { left: 2%; } /* Rapat ke pinggir */
+.arrow-left { left: 2%; } /* Positioned near container edge */
 .arrow-right { right: 2%; }
 
-/* Modern Indicators (Circles Style) */
+/* Modern Indicators (Circle Style) */
 .indicators {
   position: absolute;
   bottom: 1rem;
@@ -214,39 +227,39 @@
   border: 1px solid rgba(224, 32, 32, 0.2);
 }
 
-/* Api2A */
+/* Category Shortcuts */
 /* --- Shortcut / Quick Menu Container --- */
 .shortcut-container {
   display: grid;
-  /* Desktop: 10 kolom otomatis (sesuai jumlah data shortcut biasanya 10) */
+  /* Desktop: 10 equal columns (matching standard 10 shortcut items) */
   grid-template-columns: repeat(10, 1fr);
   gap: 1rem;
   padding: 1rem 0;
   width: 100%;
 }
 
-/* --- Item Shortcut --- */
+/* --- Shortcut Item --- */
 .shortcut-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  text-decoration: none; /* Hilangkan garis bawah link */
+  text-decoration: none; /* Remove link underline */
   color: var(--text-main);
   transition: transform 0.2s;
   cursor: pointer;
-  user-select: none; /* Mencegah teks terblok saat klik cepat */
+  user-select: none; /* Prevent accidental text selection on rapid clicks */
 }
 
 .shortcut-item:hover {
-  transform: translateY(-5px); /* Efek naik sedikit saat di-hover */
+  transform: translateY(-5px); /* Subtle lift effect on hover */
 }
 
-/* Style saat kategori AKTIF dipilih */
+/* Active selected category styles */
 .shortcut-item.active .shortcut-icon-wrapper {
-  border: 2px solid #00d094; /* Border hijau */
-  background-color: #e6fbf5; /* Background hijau muda */
-  transform: translateY(-5px); /* Naik sedikit */
+  border: 2px solid #00d094; /* Brand green border */
+  background-color: #e6fbf5; /* Light green background */
+  transform: translateY(-5px); /* Slight upward lift */
 }
 
 .shortcut-item.active .shortcut-title {
@@ -254,13 +267,14 @@
   font-weight: 700;
 }
 
-/* --- Gambar Icon --- */
+/* --- Icon Image --- */
 .shortcut-icon-wrapper {
-  width: 64px; /* Ukuran standar icon e-commerce */
+  position: relative;
+  width: 64px; /* Standard e-commerce icon size */
   height: 64px;
   margin-bottom: 8px;
-  border-radius: 18px; /* Sudut tumpul modern */
-  background: #f9f9f9; /* Background tipis jika gambar transparan */
+  border-radius: 18px; /* Modern rounded corners */
+  background: #f9f9f9; /* Subtle background for transparent images */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -270,24 +284,24 @@
 .shortcut-image {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Pastikan icon tidak terpotong */
+  object-fit: contain; /* Ensure icon is never cropped */
 }
 
-/* --- Judul Shortcut --- */
+/* --- Shortcut Title --- */
 .shortcut-title {
-  font-size: 0.85rem; /* Font kecil tapi terbaca */
+  font-size: 0.85rem; /* Compact yet legible font size */
   text-align: center;
   line-height: 1.2;
   color: #333;
   font-weight: 500;
-  /* Membatasi teks jadi 2 baris max jika kepanjangan */
+  /* Clamp text to a maximum of 2 lines if overflowing */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* Indikator Unselect */
+/* Deselect Indicator */
 .active-indicator {
   position: absolute;
   top: 0;
@@ -302,21 +316,21 @@
   font-size: 1.5rem;
   opacity: 0;
   transition: opacity 0.2s;
-  border-radius: 18px; /* Samakan dengan shortcut-icon-wrapper */
+  border-radius: 18px; /* Match shortcut-icon-wrapper border radius */
 }
 
-/* Saat user hover ke item yang SUDAH AKTIF, munculkan tanda silang */
+/* Reveal close icon when hovering over an already active item */
 .shortcut-item.active:hover .active-indicator {
   opacity: 1;
 }
 
-/*Api3A*/
+/* Product Cards */
 /* --- Product Grid Container --- */
 .product-grid {
   display: grid;
-  /* Desktop: 4 Kolom. Mobile: 2 Kolom. Responsive otomatis. */
+  /* Desktop: 4 columns. Mobile: 2 columns. Responsive layout. */
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem 1rem; /* Jarak vertikal 1.5rem, horizontal 1rem */
+  gap: 1.5rem 1rem; /* Vertical gap 1.5rem, horizontal gap 1rem */
   margin-top: 1rem;
 }
 
@@ -329,13 +343,13 @@
 }
 
 .product-card:hover {
-  transform: translateY(-4px); /* Efek naik sedikit */
+  transform: translateY(-4px); /* Subtle lift effect */
 }
 
 .card-image-wrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1; /* Kotak Sempurna */
+  aspect-ratio: 1 / 1; /* Perfect square */
   border-radius: 8px;
   overflow: hidden;
   background-color: #f5f5f5;
@@ -366,7 +380,7 @@
   color: var(--text-main);
   margin: 0 0 4px 0;
 
-  /* Batasi 2 baris teks */
+  /* Limit to 2 lines of text */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -390,7 +404,7 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  background-color: #00d094; /* Hijau brand */
+  background-color: #00d094; /* Brand green */
   color: white;
   padding: 4px 8px;
   font-size: 0.8rem;
@@ -430,7 +444,7 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
   font-size: 1rem;
 }
@@ -478,7 +492,7 @@
 /* --- Reusable Loading Component --- */
 .loading-wrapper {
   width: 100%;
-  padding: 3rem 1rem; /* Memberi ruang vertikal agar tidak gepeng */
+  padding: 3rem 1rem; /* Provide vertical breathing room */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -487,9 +501,9 @@
 
 .progress-track {
   width: 100%;
-  max-width: 300px; /* Batasi lebar agar terlihat rapi */
-  height: 4px;      /* Ketebalan garis */
-  background-color: #f0f0f0; /* Warna track abu-abu muda */
+  max-width: 300px; /* Constrain width for a clean appearance */
+  height: 4px;      /* Bar thickness */
+  background-color: #f0f0f0; /* Light gray track background */
   border-radius: 4px;
   overflow: hidden;
   position: relative;
@@ -498,9 +512,9 @@
 .progress-bar-animated {
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, #00d094, #00a072); /* Gradasi Hijau Brand */
+  background: linear-gradient(90deg, #00d094, #00a072); /* Brand green gradient */
   border-radius: 4px;
-  /* Animasi Kunci */
+  /* Keyframe animation */
   transform-origin: 0% 50%;
   animation: indeterminate 1.5s infinite ease-in-out;
 }
@@ -513,7 +527,7 @@
   animation: pulseText 1.5s infinite ease-in-out;
 }
 
-/* Efek garis bergerak dari kiri ke kanan lalu mengecil */
+/* Indeterminate bar sliding left to right */
 @keyframes indeterminate {
   0% {
     transform: translateX(0) scaleX(0);
@@ -526,43 +540,43 @@
   }
 }
 
-/* Efek teks kedip halus */
+/* Subtle pulsing text effect */
 @keyframes pulseText {
   0%, 100% { opacity: 0.6; }
   50% { opacity: 1; }
 }
 
 /* --- Image Fallback Placeholder --- */
-/* Class ini akan menggantikan <img>, jadi harus punya sifat layout yang mirip */
+/* Replaces <img> while preserving equivalent layout dimensions */
 .fallback-placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f0f0f0; /* Abu-abu muda */
-  color: #c0c0c0; /* Ikon abu-abu agak gelap */
+  background-color: #f0f0f0; /* Light gray */
+  color: #c0c0c0; /* Medium gray icon */
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Menjaga konsistensi layout */
+  object-fit: cover; /* Maintain layout consistency */
 }
 
-/* Animasi ikon biar sedikit hidup (opsional) */
+/* Subtle fallback icon sizing */
 .fallback-icon {
-  width: 40%;   /* Ukuran ikon relatif terhadap kotak */
+  width: 40%;   /* Icon size relative to container */
   height: 40%;
   opacity: 0.5;
 }
 
-/* Khusus Carousel (Api1) agar placeholder mengikuti border-radius slide */
-.slide .fallback-placeholder {
-  border-radius: 16px;
+/* Match border-radius inside Carousel slide cards */
+.slide-card .fallback-placeholder {
+  border-radius: 4px;
 }
 
-/* Khusus Shortcut (Api2) agar placeholder bulat/rounded */
+/* Match border-radius inside Category Shortcuts */
 .shortcut-icon-wrapper .fallback-placeholder {
   border-radius: 18px;
 }
 
-/* Khusus Product Card (Api3) */
+/* Match border-radius inside Product Cards */
 .card-image-wrapper .fallback-placeholder {
   border-radius: 8px;
 }
@@ -570,23 +584,23 @@
 /* --- Responsive (Mobile) --- */
 @media (max-width: 768px) {
   .shortcut-container {
-    /* Di Mobile jadi 5 kolom (2 baris jika ada 10 item) */
+    /* Mobile: 5 columns (2 rows for 10 items) */
     grid-template-columns: repeat(5, 1fr);
-    gap: 0.8rem 0.5rem; /* Gap vertikal, horizontal */
+    gap: 0.8rem 0.5rem; /* Vertical and horizontal gaps */
   }
 
   .shortcut-icon-wrapper {
-    width: 48px; /* Icon lebih kecil di HP */
+    width: 48px; /* Smaller icons on mobile */
     height: 48px;
     border-radius: 14px;
   }
 
   .shortcut-title {
-    font-size: 0.75rem; /* Font lebih kecil */
+    font-size: 0.75rem; /* Smaller font size */
   }
 
   .product-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 Kolom di HP */
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
     gap: 1rem 0.8rem;
   }
 
@@ -595,7 +609,7 @@
   }
 }
 
-/* Skeleton Loading untuk Shortcut */
+/* Skeleton Loader for Shortcuts */
 .loading-skeleton-sm {
   width: 100%;
   height: 100px;
@@ -604,28 +618,26 @@
   animation: shimmer 1.5s infinite;
   margin-top: 1.5rem;
 }
-/* Api2A end */
 
-/* 5. Mobile Responsiveness */
+/* 5. Mobile Carousel Responsiveness */
 @media (max-width: 768px) {
-  .carousel-container {
-    aspect-ratio: 1.5 / 1;
-    padding: 1rem 0 3rem 0;
+  .carousel-viewport {
+    padding: 1.5rem 0 3rem 0;
   }
 
-  .slide {
-    width: 45%; /* Di HP, slide utama perlu lebih lebar */
+  .embla-slide {
+    flex: 0 0 28%; /* Wider active slide on mobile screens */
   }
 
-  /* Di HP mungkin hanya muat 3 yang jelas, 2 luar sedikit terpotong */
-  .slide.active { transform: translateX(0) scale(1.1); }
-  .slide.prev { transform: translateX(-60%) scale(0.85); }
-  .slide.next { transform: translateX(60%) scale(0.85); }
-  .slide.far-prev { transform: translateX(-110%) scale(0.6); }
-  .slide.far-next { transform: translateX(110%) scale(0.6); }
+  /* Compact scaling for mobile viewports */
+  .embla-slide.active .slide-card { transform: scale(1.05); }
+  .embla-slide.prev .slide-card { transform: scale(0.8); }
+  .embla-slide.next .slide-card { transform: scale(0.8); }
+  .embla-slide.far-prev .slide-card { transform: scale(0.58); }
+  .embla-slide.far-next .slide-card { transform: scale(0.58); }
 
   .arrow {
-    display: none; /* Sembunyikan panah di mobile (Gunakan Swipe) */
+    display: none; /* Hide arrows on mobile (use touch swipe instead) */
   }
 
   .indicators {

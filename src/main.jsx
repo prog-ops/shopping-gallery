@@ -1,5 +1,5 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -8,17 +8,17 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            staleTime: 1000 * 60 * 5, // Data dianggap "segar" selama 5 menit (tidak akan fetch ulang)
-            cacheTime: 1000 * 60 * 10, // Data disimpan di memori 10 menit
-            refetchOnWindowFocus: false, // Jangan fetch ulang cuma gara-gara ganti tab browser
+            staleTime: 1000 * 60 * 5, // Data remains fresh for 5 minutes (will not refetch)
+            gcTime: 1000 * 60 * 10, // Unused data is kept in memory for 10 minutes
+            refetchOnWindowFocus: false, // Do not refetch simply when switching browser tabs
         },
     },
 })
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-          <App />
-      </QueryClientProvider>
-  </React.StrictMode>,
+createRoot(document.getElementById('root')).render(
+    <StrictMode>
+        <QueryClientProvider client={queryClient}>
+            <App />
+        </QueryClientProvider>
+    </StrictMode>,
 )

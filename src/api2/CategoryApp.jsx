@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
 import mockData from '../api2.json';
-import {useQuery} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useStore } from "../store/store";
 import Loading from "../components/Loading.jsx";
 import ImageWithFallback from "../components/ImageWithFallback.jsx";
@@ -11,24 +10,30 @@ const ShortcutGrid = ({ data, onFilterClick, activeCategory }) => {
     return (
         <div className="shortcut-container">
             {data.map((item, index) => {
-                // Cek apakah item ini sedang aktif (dipilih)
+                // Check whether this category item is currently active (selected)
                 const isActive = activeCategory === item.title;
 
                 return (
                     <div
                         key={item.mainShortcutId || index}
                         className={`shortcut-item ${isActive ? 'active' : ''}`}
-                        // PENTING: Hapus href. Gunakan onClick saja.
                         onClick={() => onFilterClick(item.title)}
-                        role="button" // Aksesibilitas: Beri tahu browser ini tombol
-                        tabIndex={0}  // Aksesibilitas: Bisa difokuskan dengan tab
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                onFilterClick(item.title);
+                            }
+                        }}
+                        role="button" // Accessibility: announce this element as a button
+                        tabIndex={0}  // Accessibility: make focusable via keyboard Tab
                     >
                         <div className="shortcut-icon-wrapper">
                             <ImageWithFallback
                                 src={item.imageUrl}
                                 alt={item.title}
                                 className="shortcut-image"
-                            />{/* Opsional: Tambahkan tanda silang kecil saat aktif agar user tahu bisa di-unselect */}
+                            />
+                            {/* Show a small close indicator when active so users know it can be deselected */}
                             {isActive && <div className="active-indicator">✕</div>}
                         </div>
                         <span className="shortcut-title">{item.title}</span>
@@ -40,7 +45,7 @@ const ShortcutGrid = ({ data, onFilterClick, activeCategory }) => {
 };
 
 const CategoryApp = () => {
-    // Ambil juga selectedCategory untuk visual feedback (highlight)
+    // Retrieve selectedCategory as well for active visual feedback (highlight)
     const { setCategory, resetCategory, selectedCategory } = useStore();
 
     const { data: shortcuts, isLoading } = useQuery({
@@ -49,7 +54,7 @@ const CategoryApp = () => {
             const res = await fetch('https://kolzsticks.github.io/Free-Ecommerce-Products-Api/main/products.json');
             const data = await res.json();
 
-            // Map ke format shortcut berdasarkan kategori unik
+            // Map products to shortcut format based on unique categories
             const categoriesMap = new Map();
             data.forEach(item => {
                 if (!categoriesMap.has(item.category)) {
@@ -64,13 +69,13 @@ const CategoryApp = () => {
         }
     });
 
-    // --- LOGIC TOGGLE (UNSELECT) ---
+    // --- TOGGLE LOGIC (DESELECT) ---
     const handleCategoryClick = (clickedTitle) => {
         if (selectedCategory === clickedTitle) {
-            // Jika yang diklik adalah yang sedang aktif -> Matikan (Reset)
+            // If clicking the currently active category -> deactivate (reset)
             resetCategory();
         } else {
-            // Jika beda -> Aktifkan baru
+            // If clicking a different category -> activate it
             setCategory(clickedTitle);
         }
     };
@@ -81,13 +86,14 @@ const CategoryApp = () => {
 
     return (
         <div className="section-container" style={{ marginTop: '1.5rem' }}>
-            {/* Saat diklik, update state global via Zustand */}
+            {/* Update global filter state via Zustand on click */}
             <ShortcutGrid
                 data={finalShortcuts}
-                activeCategory={selectedCategory} // Kirim status aktif
+                activeCategory={selectedCategory} // Pass active category status
                 onFilterClick={handleCategoryClick}
             />
         </div>
     );
 };
+
 export default CategoryApp;

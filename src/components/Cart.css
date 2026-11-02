@@ -2,7 +2,7 @@
     position: fixed;
     top: 50%;
     right: 0;
-    /* Mulanya geser ke kanan sejauh lebar drawer (350px) agar sembunyi, hanya icon yang terlihat */
+    /* Initially shift right by the drawer width (350px) so only the trigger icon is visible */
     transform: translateY(-50%) translateX(350px);
     z-index: 1000;
     display: flex;
@@ -11,7 +11,7 @@
 }
 
 .cart-hover-container:hover {
-    /* Saat hover, geser kembali ke posisi normal (0) sehingga drawer terlihat */
+    /* Slide back to 0 on hover to reveal the drawer */
     transform: translateY(-50%) translateX(0);
 }
 
@@ -93,7 +93,7 @@
     gap: 1rem;
 }
 
-/* Scrollbar khusus untuk drawer */
+/* Custom scrollbar for drawer */
 .cart-items::-webkit-scrollbar {
     width: 6px;
 }

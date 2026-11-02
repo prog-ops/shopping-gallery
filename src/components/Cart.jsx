@@ -1,4 +1,3 @@
-import React from 'react';
 import { useStore } from '../store/store';
 import { BsCart3, BsTrash, BsPlus, BsDash } from 'react-icons/bs';
 import './Cart.css';
@@ -20,15 +19,15 @@ const Cart = () => {
             {/* Cart Drawer */}
             <div className="cart-drawer">
                 <div className="cart-header">
-                    <h2>Keranjang</h2>
-                    <span className="cart-count">{totalItems} Item</span>
+                    <h2>Cart</h2>
+                    <span className="cart-count">{totalItems} {totalItems === 1 ? 'Item' : 'Items'}</span>
                 </div>
 
                 <div className="cart-items">
                     {cart.length === 0 ? (
                         <div className="empty-cart">
                             <BsCart3 size={48} color="#ccc" />
-                            <p>Keranjang masih kosong</p>
+                            <p>Your cart is empty</p>
                         </div>
                     ) : (
                         cart.map((item) => (
@@ -59,7 +58,7 @@ const Cart = () => {
                             <span>Total</span>
                             <span>${totalPrice.toFixed(2)}</span>
                         </div>
-                        <button 
+                        <button
                             className="checkout-btn"
                             onClick={() => {
                                 useStore.getState().setCheckoutOpen(true);

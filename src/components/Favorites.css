@@ -2,17 +2,17 @@
     position: fixed;
     top: 50%;
     left: 0;
-    /* Mulanya geser ke kiri sejauh lebar drawer (350px) agar sembunyi, hanya icon yang terlihat */
+    /* Initially shift left by the drawer width (350px) so only the trigger icon is visible */
     transform: translateY(-50%) translateX(-350px);
     z-index: 1000;
     display: flex;
-    flex-direction: row-reverse; /* Supaya icon ada di sebelah kanan drawer */
+    flex-direction: row-reverse; /* Place the trigger icon on the right side of the drawer */
     align-items: center;
     transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .fav-hover-container:hover {
-    /* Saat hover, geser kembali ke posisi normal (0) sehingga drawer terlihat */
+    /* Slide back to 0 on hover to reveal the drawer */
     transform: translateY(-50%) translateX(0);
 }
 
@@ -20,8 +20,8 @@
     background-color: white;
     width: 60px;
     height: 60px;
-    border-radius: 0 12px 12px 0; /* Lengkungan di kanan */
-    box-shadow: 4px 0 15px rgba(0,0,0,0.1); /* Shadow ke arah luar/kanan */
+    border-radius: 0 12px 12px 0; /* Rounded corners on the right */
+    box-shadow: 4px 0 15px rgba(0,0,0,0.1); /* Outward shadow toward the right */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,13 +31,13 @@
 
 .fav-icon {
     font-size: 1.8rem;
-    color: #ff4757; /* Warna merah favorit */
+    color: #ff4757; /* Favorite red accent color */
 }
 
 .fav-badge {
     position: absolute;
     top: 10px;
-    left: 10px; /* Diubah ke kiri karena icon wrapper hadap kanan */
+    left: 10px; /* Positioned on the left since the icon wrapper faces right */
     background-color: #333;
     color: white;
     font-size: 0.75rem;
@@ -56,8 +56,8 @@
     height: 80vh;
     max-height: 600px;
     background-color: white;
-    box-shadow: 5px 0 25px rgba(0,0,0,0.15); /* Shadow ke kanan */
-    border-radius: 0 16px 16px 0; /* Lengkungan di kanan */
+    box-shadow: 5px 0 25px rgba(0,0,0,0.15); /* Rightward drop shadow */
+    border-radius: 0 16px 16px 0; /* Rounded corners on the right */
     display: flex;
     flex-direction: column;
 }
@@ -94,7 +94,7 @@
     gap: 1rem;
 }
 
-/* Scrollbar khusus untuk drawer */
+/* Custom scrollbar for drawer */
 .fav-items::-webkit-scrollbar {
     width: 6px;
 }
