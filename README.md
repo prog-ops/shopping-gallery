@@ -1,5 +1,7 @@
 # 🛍️ Modern E-Commerce UI Architecture
 
+Note: All data in JSON API files are dummies. No key is real in the data.
+
 A high-performance, responsive e-commerce interface engineered with **React**, **Zustand**, and **TanStack Query**.
 
 This project serves as a showcase of modern frontend architecture, focusing on **Core Web Vitals (CWV)**, seamless UX, and efficient state management. Built from the ground up to mimic enterprise-level E-commerce applications without relying on heavy UI frameworks or external dependency bloat.
